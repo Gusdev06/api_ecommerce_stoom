@@ -1,56 +1,48 @@
-import {
-    IListPaginatedUseCase,
-    IListUseCaseParams,
-} from "@/core/protocols/IListUseCase";
+import { IListUseCaseParams } from "@/core/protocols/IListUseCase";
 
 import { HttpStatusCode } from "@/core/constants/HttpStatusCode";
 import { Either, right } from "@/core/either";
 import { ErrorHandler } from "@/core/errors/ErrorHandler";
-import { ICurrentPageValidation } from "@/core/pagination/adapters/ICurrentPageValidation";
 import { IOffsetGenerator } from "@/core/pagination/adapters/IOffset";
 import { ITotalPagesGenerator } from "@/core/pagination/adapters/ITotalPagesGenerator";
 import { IPaginationResponse } from "@/core/pagination/interfaces/IPaginationResponse";
-import { User } from "../entities/User";
-import { UserRepository } from "../repositories/user-repository";
+import { Product } from "../entities/Product";
+import { ProductRepository } from "../repositories/product-repository";
 
-type FetchUsersUseCaseResponse = Either<Error, IPaginationResponse<User>>;
-export class ListUsersUseCase
-    implements IListPaginatedUseCase<FetchUsersUseCaseResponse>
-{
+type FetchProductsUseCaseResponse = Either<Error, IPaginationResponse<Product>>;
+export class ListProductsUseCase {
     constructor(
-        private readonly repository: UserRepository,
+        private readonly repository: ProductRepository,
         private readonly offsetGenerator: IOffsetGenerator,
         private readonly totalPagesGenerator: ITotalPagesGenerator,
-        private readonly currentPageValidation: ICurrentPageValidation,
     ) {}
     async execute({
         search,
         limit,
         page,
-    }: IListUseCaseParams): Promise<FetchUsersUseCaseResponse> {
+    }: IListUseCaseParams): Promise<FetchProductsUseCaseResponse> {
         const offset = this.offsetGenerator.generate({ page, limit });
 
-        const users = await this.repository.list({
+        const products = await this.repository.list({
             search,
             limit: page !== undefined && limit ? limit : undefined,
             offset: page !== undefined && limit ? offset : undefined,
         });
 
-        if (!users)
+        if (!products)
             throw new ErrorHandler(
-                "Error on get users from database",
+                "Error on get products from database",
                 HttpStatusCode.BAD_REQUEST,
             );
 
         const totalPages = this.totalPagesGenerator.generate({
-            totalRegisters: users.count,
+            totalRegisters: products.count,
             limit,
         });
 
         return right({
-            result: users.users, // Add 'result' property
-            data: users.users,
-            totalRegisters: users.count,
+            result: products.products,
+            totalRegisters: products.count,
             totalPages,
             currentPage: page ?? 0,
         });

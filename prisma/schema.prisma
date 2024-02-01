@@ -17,3 +17,13 @@ model User {
 
   @@map("users")
 }
+
+model Product {
+  id          String      @unique @default(uuid())
+  name        String
+  description String
+  price       Float
+  in_stock    Int
+  createdAt   DateTime
+  updatedAt   DateTime
+}
