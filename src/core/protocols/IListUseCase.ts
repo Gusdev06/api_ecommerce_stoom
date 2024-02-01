@@ -1,4 +1,4 @@
-import { IPaginationResponse } from "@/shared/utils/pagination/interfaces/IPaginationResponse";
+import { IPaginationResponse } from "../pagination/interfaces/IPaginationResponse";
 
 export interface IListUseCaseParams {
     search?: string;
