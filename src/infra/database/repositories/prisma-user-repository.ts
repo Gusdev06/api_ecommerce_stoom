@@ -1,9 +1,9 @@
+import { User } from "@/domain/users/entities/User";
 import {
     IListUsersRequest,
     IListUsersResponse,
-} from "@/core/pagination/pagination-params";
-import { User } from "@/domain/users/entities/User";
-import { UserRepository } from "@/domain/users/repositories/user-repository";
+    UserRepository,
+} from "@/domain/users/repositories/user-repository";
 import { PrismaClient } from "@prisma/client";
 import { context } from "../context";
 import { PrismaUserMapper } from "../mappers/prisma-user-mapper";
@@ -11,7 +11,7 @@ import { PrismaUserMapper } from "../mappers/prisma-user-mapper";
 class UserPrismaRepository implements UserRepository {
     private prismaClient: PrismaClient;
 
-    constructor(private readonly prismaMapper: PrismaUserMapper) {
+    constructor() {
         this.prismaClient = context.prisma;
     }
 
@@ -25,11 +25,11 @@ class UserPrismaRepository implements UserRepository {
             return null;
         }
 
-        return this.prismaMapper.toDomain(usersP);
+        return PrismaUserMapper.toDomain(usersP);
     }
 
     async create(user: User): Promise<void> {
-        const data = this.prismaMapper.toPrisma(user);
+        const data = PrismaUserMapper.toPrisma(user);
 
         await this.prismaClient.user.create({ data });
     }
@@ -38,7 +38,7 @@ class UserPrismaRepository implements UserRepository {
         search,
         limit,
         offset,
-    }: IListUsersRequest): Promise<IListUsersResponse | undefined> {
+    }: IListUsersRequest): Promise<IListUsersResponse | null> {
         const where = search
             ? {
                   OR: [
@@ -61,11 +61,11 @@ class UserPrismaRepository implements UserRepository {
             skip: offset,
         });
 
-        if (!usersP) return undefined;
+        if (!usersP) return null;
 
         const users = await Promise.all(
             usersP.map(async (userP) => {
-                return this.prismaMapper.toDomain(userP);
+                return PrismaUserMapper.toDomain(userP);
             }),
         );
 

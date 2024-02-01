@@ -1,7 +1,8 @@
 import { HttpStatusCode } from "@/core/constants/HttpStatusCode";
 import { IController } from "@/core/protocols/IController";
-import { UserPresenter } from "@/domain/users/presenters/user-presenter";
+
 import { ListUsersUseCase } from "@/domain/users/use-cases/fetch-users";
+import { UserPresenter } from "@/infra/database/presenters/user-presenter";
 import { NextFunction, Request, Response } from "express";
 
 export class ListUsersController implements IController {

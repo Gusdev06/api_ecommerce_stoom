@@ -1,6 +1,7 @@
 import { IController } from "@/core/protocols/IController";
-import { UserPresenter } from "@/domain/users/presenters/user-presenter";
+
 import { RegisterUserUseCase } from "@/domain/users/use-cases/register-user";
+import { UserPresenter } from "@/infra/database/presenters/user-presenter";
 import { NextFunction, Request, Response } from "express";
 
 export { CreateUserController };

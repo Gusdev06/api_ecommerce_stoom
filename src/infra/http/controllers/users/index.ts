@@ -2,13 +2,13 @@ import { CurrentPageValidation } from "@/core/pagination/adapters/implementation
 import { OffsetGenerator } from "@/core/pagination/adapters/implementations/Offset";
 import { TotalPagesGenerator } from "@/core/pagination/adapters/implementations/TotalPagesGenerator";
 import { ListUsersUseCase } from "@/domain/users/use-cases/fetch-users";
-import { PrismaUserMapper } from "@/infra/database/mappers/prisma-user-mapper";
+import { RegisterUserUseCase } from "@/domain/users/use-cases/register-user";
+import { BcryptHasher } from "@/infra/cryptography/bcrypt-hasher";
 import { UserPrismaRepository } from "@/infra/database/repositories/prisma-user-repository";
-import { ListUsersController } from "../fetch-users.controller";
+import { CreateUserController } from "./create-account-controller";
+import { ListUsersController } from "./fetch-users.controller";
 
-const prismaUserMapper = new PrismaUserMapper();
-const usersRepository = new UserPrismaRepository(prismaUserMapper);
-
+const usersRepository = new UserPrismaRepository();
 const offsetGenerator = new OffsetGenerator();
 const totalPagesGenerator = new TotalPagesGenerator();
 const currentPageValidation = new CurrentPageValidation();
@@ -18,8 +18,13 @@ const listUsersUseCase = new ListUsersUseCase(
     totalPagesGenerator,
     currentPageValidation,
 );
-
+const bcryptHasher = new BcryptHasher();
+const prismaUserRepository = new UserPrismaRepository();
+const registerUserUseCase = new RegisterUserUseCase(
+    prismaUserRepository,
+    bcryptHasher,
+);
+const createAccountController = new CreateUserController(registerUserUseCase);
 const listUsersController = new ListUsersController(listUsersUseCase);
-
-export { listUsersController };
+export { createAccountController, listUsersController };
 

@@ -1,5 +1,7 @@
-import { createAccountController } from "@/infra/http/create-account";
-import { listUsersController } from "@/infra/http/fetch-users";
+import {
+    createAccountController,
+    listUsersController,
+} from "@/infra/http/controllers/users";
 import { Router } from "express";
 
 const userRoutes = Router();

@@ -3,7 +3,7 @@ import { User } from "@/domain/users/entities/User";
 import { Prisma, User as PrismaUser } from "@prisma/client";
 
 export class PrismaUserMapper {
-    public toDomain(raw: PrismaUser): User {
+    static toDomain(raw: PrismaUser): User {
         return User.create(
             {
                 name: raw.name,
@@ -14,7 +14,7 @@ export class PrismaUserMapper {
         );
     }
 
-    public toPrisma(user: User): Prisma.UserUncheckedCreateInput {
+    static toPrisma(user: User): Prisma.UserUncheckedCreateInput {
         return {
             id: user.id.toString(),
             name: user.name,
