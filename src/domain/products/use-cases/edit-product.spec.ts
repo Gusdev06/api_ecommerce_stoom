@@ -42,5 +42,41 @@ describe("Edit Product", () => {
         expect(inMemoryProductsRepository.items[0].price).toBe(200);
         expect(inMemoryProductsRepository.items[0].inStock).toBe(20);
     });
+
+    it("should be not able product with inStock less than 1", async () => {
+        const newProduct = makeProduct(
+            {
+                name: "Product 1",
+                description: "Product 1",
+                price: 100,
+                inStock: 10,
+            },
+            new UniqueEntityID("1"),
+        );
+
+        await inMemoryProductsRepository.create(newProduct);
+
+        const result = await sut.execute({
+            id: "1",
+            name: "Product 2",
+            description: "Product 2",
+            price: 200,
+            inStock: 0,
+        });
+
+        expect(result.isLeft()).toBe(true);
+    });
+
+    it("should be not able to edit a product that does not exist", async () => {
+        const result = await sut.execute({
+            id: "1",
+            name: "Product 2",
+            description: "Product 2",
+            price: 200,
+            inStock: 20,
+        });
+
+        expect(result.isLeft()).toBe(true);
+    });
 });
 

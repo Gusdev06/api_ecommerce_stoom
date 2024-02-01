@@ -19,11 +19,11 @@ model User {
 }
 
 model Product {
-  id          String      @unique @default(uuid())
+  id          String   @unique @default(uuid())
   name        String
   description String
   price       Float
-  in_stock    Int
+  inStock     Int
   createdAt   DateTime
   updatedAt   DateTime
 }

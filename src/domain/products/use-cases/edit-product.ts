@@ -3,6 +3,7 @@ import { Either, left, right } from "@/core/either";
 import { IUseCase } from "@/core/protocols/IUseCase";
 import { Product } from "../entities/Product";
 import { NotFoundError } from "../errors/not-found-error";
+import { QuantityError } from "../errors/quantity-error";
 import { ProductRepository } from "../repositories/product-repository";
 
 interface EditProductUseCaseRequest {
@@ -14,7 +15,7 @@ interface EditProductUseCaseRequest {
 }
 
 type EditProductUseCaseResponse = Either<
-    NotFoundError,
+    NotFoundError | QuantityError,
     {
         product: Product;
     }
@@ -42,6 +43,10 @@ export class EditProductUseCase
         product.description = description;
         product.price = price;
         product.inStock = inStock;
+
+        if (product.inStock < 1) {
+            return left(new QuantityError());
+        }
 
         await this.productRepository.save(product);
 
