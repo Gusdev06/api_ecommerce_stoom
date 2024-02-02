@@ -4,7 +4,7 @@ import { RegisterUserUseCase } from "@/domain/users/use-cases/register-user";
 import { BcryptHasher } from "@/infra/cryptography/bcrypt-hasher";
 import { UserPrismaRepository } from "@/infra/database/repositories/prisma-user-repository";
 import { JwtEncrypter } from "./../../../cryptography/jwt-encrypter";
-import { AuthenticateUserController } from "./authenticate-user.controller";
+import { AuthenticateUserController } from "./authenticate-user-controller";
 import { CreateUserController } from "./create-account-controller";
 
 const jwtEncrypter = new JwtEncrypter();

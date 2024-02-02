@@ -26,7 +26,7 @@ export abstract class ProductRepository {
         limit,
         offset,
     }: IListProductsRequest): Promise<IListProductsResponse | null>;
-    // abstract save(product: Product): Promise<void>;
+    abstract save(product: Product): Promise<void>;
     abstract create(product: Product): Promise<void>;
-    // abstract delete(product: Product): Promise<void>;
+    abstract delete(product: Product): Promise<void>;
 }

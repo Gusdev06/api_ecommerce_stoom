@@ -1,14 +1,14 @@
 import { HttpStatusCode } from "@/core/constants/HttpStatusCode";
 import { IController } from "@/core/protocols/IController";
-import { CreateProductUseCase } from "@/domain/products/use-cases/create-product";
+import { EditProductUseCase } from "@/domain/products/use-cases/edit-product";
 import { ProductPresenter } from "@/infra/database/presenters/product-presenter";
 
 import { NextFunction, Request, Response } from "express";
 
-export { CreateProductController };
+export { EditProductController };
 
-class CreateProductController implements IController {
-    constructor(private readonly useCase: CreateProductUseCase) {}
+class EditProductController implements IController {
+    constructor(private readonly useCase: EditProductUseCase) {}
 
     async handle(
         request: Request,
@@ -16,9 +16,11 @@ class CreateProductController implements IController {
         next: NextFunction,
     ): Promise<void | Response<any, Record<string, any>>> {
         try {
+            const { id } = request.params;
             const { name, description, price, inStock } = request.body;
 
             const result = await this.useCase.execute({
+                id,
                 name,
                 description,
                 price,
@@ -31,7 +33,7 @@ class CreateProductController implements IController {
                     .json(result.value);
 
             return response
-                .status(HttpStatusCode.CREATED)
+                .status(HttpStatusCode.OK)
                 .json(ProductPresenter.toHTTP(result.value?.product));
         } catch (error) {
             next(error);

@@ -1,14 +1,14 @@
 import { HttpStatusCode } from "@/core/constants/HttpStatusCode";
 import { IController } from "@/core/protocols/IController";
-import { CreateProductUseCase } from "@/domain/products/use-cases/create-product";
+import { DeleteProductUseCase } from "@/domain/products/use-cases/delete-product";
 import { ProductPresenter } from "@/infra/database/presenters/product-presenter";
 
 import { NextFunction, Request, Response } from "express";
 
-export { CreateProductController };
+export { DeleteProductController };
 
-class CreateProductController implements IController {
-    constructor(private readonly useCase: CreateProductUseCase) {}
+class DeleteProductController implements IController {
+    constructor(private readonly useCase: DeleteProductUseCase) {}
 
     async handle(
         request: Request,
@@ -16,13 +16,10 @@ class CreateProductController implements IController {
         next: NextFunction,
     ): Promise<void | Response<any, Record<string, any>>> {
         try {
-            const { name, description, price, inStock } = request.body;
+            const { id } = request.params;
 
             const result = await this.useCase.execute({
-                name,
-                description,
-                price,
-                inStock,
+                id,
             });
 
             if (result.isLeft())
@@ -31,7 +28,7 @@ class CreateProductController implements IController {
                     .json(result.value);
 
             return response
-                .status(HttpStatusCode.CREATED)
+                .status(HttpStatusCode.OK)
                 .json(ProductPresenter.toHTTP(result.value?.product));
         } catch (error) {
             next(error);

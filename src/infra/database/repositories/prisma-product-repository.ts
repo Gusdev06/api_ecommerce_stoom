@@ -34,6 +34,25 @@ class ProductPrismaRepository implements ProductRepository {
         await this.prismaClient.product.create({ data });
     }
 
+    async save(product: Product): Promise<void> {
+        const data = PrismaProductMapper.toPrisma(product);
+
+        await this.prismaClient.product.update({
+            where: {
+                id: product.id.toString(),
+            },
+            data,
+        });
+    }
+
+    async delete(product: Product): Promise<void> {
+        await this.prismaClient.product.delete({
+            where: {
+                id: product.id.toString(),
+            },
+        });
+    }
+
     async list({
         search,
         limit,

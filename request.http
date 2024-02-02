@@ -1,0 +1,90 @@
+@baseUrl = http://localhost:3333
+
+# @name create_account
+POST {{baseUrl}}/accounts
+Content-Type: application/json
+
+{
+  "name": "Gustavo Gomes",
+  "email": "gustavo@.com.br",
+  "password": "12345678",
+  "address": "rua joao urizzi 421"
+
+}
+
+###
+
+# @name authenticate
+POST {{baseUrl}}/sessions
+Content-Type: application/json
+
+{
+  "email": "gustavo@.com.br",
+  "password": "12345678"
+}
+
+###
+
+
+
+POST {{baseUrl}}/orders
+Content-Type: application/json
+
+{
+
+  "total": 0,
+  "itens": [
+
+    {
+      "productId": "idDoProduto",
+      "quantity": 5
+    }
+  ]
+}
+
+###
+
+
+
+
+###
+
+PUT {{baseUrl}}/orders/idDoPedido/status
+Content-Type: application/json
+
+
+{
+  "status": "READY"
+}
+###
+
+
+GET {{baseUrl}}/products
+content-type: application/json
+###
+POST {{baseUrl}}/products
+Content-Type: application/json
+
+
+{
+  "name": "Produto 1",
+  "price": 10,
+  "description": "Descrição do produto 1",
+  "inStock": 3
+}
+
+
+###
+
+PUT {{baseUrl}}/products/e3373c3b-b0a2-425f-951f-de213bdc56c5
+Content-Type: application/json
+
+{
+  "description": "teste",
+  "inStock": 0
+}
+
+
+###
+
+DELETE {{baseUrl}}/products/7142e8dc-98b3-4837-9855-d2f6c044fc17
