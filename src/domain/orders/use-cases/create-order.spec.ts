@@ -35,5 +35,25 @@ describe("create order", () => {
             expect.objectContaining({ orderItensIds: new UniqueEntityID("2") }),
         ]);
     });
+
+    it("should persist orderItens when creating a new order", async () => {
+        const result = await sut.execute({
+            userId: "1",
+            orderItensIds: ["1", "2"],
+        });
+
+        expect(result.isRight()).toBeTruthy();
+        expect(inMemoryOrderOrderItemRepository.items).toHaveLength(2);
+        expect(inMemoryOrderOrderItemRepository.items).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    orderItensIds: new UniqueEntityID("1"),
+                }),
+                expect.objectContaining({
+                    orderItensIds: new UniqueEntityID("2"),
+                }),
+            ]),
+        );
+    });
 });
 

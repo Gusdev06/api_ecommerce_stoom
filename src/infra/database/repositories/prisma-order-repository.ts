@@ -1,4 +1,5 @@
 import { Order } from "@/domain/orders/entities/order";
+import { OrderOrderItemRepository } from "@/domain/orders/repositories/order-order-item-repository";
 import { OrderRepository } from "@/domain/orders/repositories/order-repository";
 import { PrismaClient } from "@prisma/client";
 import { context } from "../context";
@@ -7,7 +8,7 @@ import { PrismaOrderMapper } from "../mappers/prisma-order-mapper";
 class OrderPrismaRepository implements OrderRepository {
     private prismaClient: PrismaClient;
 
-    constructor() {
+    constructor(private orderOrderItensRepository: OrderOrderItemRepository) {
         this.prismaClient = context.prisma;
     }
 
@@ -26,10 +27,16 @@ class OrderPrismaRepository implements OrderRepository {
     async save(order: Order): Promise<void> {
         const data = PrismaOrderMapper.toPersistence(order);
 
-        await this.prismaClient.order.update({
-            where: { id: order.id.toString() },
-            data,
-        });
+        await Promise.all([
+            this.prismaClient.order.update({
+                where: { id: data.id },
+                data,
+            }),
+            this.orderOrderItensRepository.createMany(order.itens.getItems()),
+            this.orderOrderItensRepository.deleteMany(
+                order.itens.getRemovedItems(),
+            ),
+        ]);
     }
 
     async create(order: Order): Promise<void> {
@@ -38,6 +45,8 @@ class OrderPrismaRepository implements OrderRepository {
         await this.prismaClient.order.create({
             data,
         });
+
+        await this.orderOrderItensRepository.createMany(order.itens.getItems());
     }
 
     async delete(order: Order): Promise<void> {

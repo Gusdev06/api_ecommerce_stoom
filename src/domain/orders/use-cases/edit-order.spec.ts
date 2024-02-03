@@ -43,9 +43,44 @@ describe("Edit Order", () => {
             inMemoryOrdersRepository.items[0].itens.currentItems,
         ).toHaveLength(2);
         expect(inMemoryOrdersRepository.items[0].itens.currentItems).toEqual([
-            expect.objectContaining({ orderItemId: new UniqueEntityID("1") }),
-            expect.objectContaining({ orderItemId: new UniqueEntityID("3") }),
+            expect.objectContaining({ orderItensIds: new UniqueEntityID("1") }),
+            expect.objectContaining({ orderItensIds: new UniqueEntityID("3") }),
         ]);
+    });
+
+    it("should sync new and removed orderItens when editing an order", async () => {
+        const existingOrder = makeOrder();
+        inMemoryOrdersRepository.create(existingOrder);
+
+        inMemoryOrderOrderItemRepository.items.push(
+            makeOrderOrderItem({
+                orderId: existingOrder.id,
+                orderItensIds: new UniqueEntityID("1"),
+            }),
+            makeOrderOrderItem({
+                orderId: existingOrder.id,
+                orderItensIds: new UniqueEntityID("2"),
+            }),
+        );
+
+        const result = await sut.execute({
+            id: existingOrder.id.toValue(),
+            orderItensIds: ["1", "3"],
+            status: "completed",
+        });
+
+        expect(result.isRight()).toBeTruthy();
+        expect(inMemoryOrderOrderItemRepository.items).toHaveLength(2);
+        expect(inMemoryOrderOrderItemRepository.items).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    orderItensIds: new UniqueEntityID("1"),
+                }),
+                expect.objectContaining({
+                    orderItensIds: new UniqueEntityID("3"),
+                }),
+            ]),
+        );
     });
 });
 

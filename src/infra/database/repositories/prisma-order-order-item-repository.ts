@@ -24,6 +24,35 @@ class OrderOrderItemPrismaRepository implements OrderOrderItemRepository {
             where: { orderId },
         });
     }
+
+    async createMany(orderItensId: OrderOrderitem[]): Promise<void> {
+        if (orderItensId.length === 0) {
+            return;
+        }
+
+        const data =
+            PrismaOrderOrderItemMapper.toPrismaUpdateMany(orderItensId);
+
+        await this.prismaClient.orderItem.updateMany(data);
+    }
+
+    async deleteMany(orderItensId: OrderOrderitem[]): Promise<void> {
+        if (orderItensId.length === 0) {
+            return;
+        }
+
+        const orderItemId = orderItensId.map((orderItem) => {
+            return orderItem.id.toString();
+        });
+
+        await this.prismaClient.orderItem.deleteMany({
+            where: {
+                id: {
+                    in: orderItemId,
+                },
+            },
+        });
+    }
 }
 
 export { OrderOrderItemPrismaRepository };
