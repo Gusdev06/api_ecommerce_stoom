@@ -3,7 +3,7 @@ import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 
 export interface OrderOrderitemProps {
     orderId: UniqueEntityID;
-    orderItemId: UniqueEntityID;
+    orderItensIds: UniqueEntityID;
 }
 
 export class OrderOrderitem extends Entity<OrderOrderitemProps> {
@@ -15,8 +15,8 @@ export class OrderOrderitem extends Entity<OrderOrderitemProps> {
         return this.props.orderId;
     }
 
-    get orderItemId() {
-        return this.props.orderItemId;
+    get orderItensIds() {
+        return this.props.orderItensIds;
     }
 
     static create(props: OrderOrderitemProps, id?: UniqueEntityID) {
