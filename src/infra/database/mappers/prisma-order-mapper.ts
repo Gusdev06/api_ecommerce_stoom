@@ -1,29 +1,29 @@
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
-import { Order } from "@/domain/orders/entities/Order";
-import { Prisma, Order as PrismaOrder } from "@prisma/client";
+import { Order } from "@/domain/orders/entities/order";
+
+import { OrderStatus, Prisma, Order as PrismaOrder } from "@prisma/client";
 
 export class PrismaOrderMapper {
     static toDomain(raw: PrismaOrder): Order {
         return Order.create(
             {
-                name: raw.name,
-                description: raw.description,
-                price: raw.price,
-                inStock: raw.inStock,
+                userId: new UniqueEntityID(raw.userId),
+                status: raw.status,
+                createdAt: raw.createdAt,
+                updatedAt: raw.updatedAt,
             },
             new UniqueEntityID(raw.id),
         );
     }
 
-    static toPrisma(order: Order): Prisma.OrderUncheckedCreateInput {
+    static toPersistence(order: Order): Prisma.OrderUncheckedCreateInput {
         return {
             id: order.id.toString(),
-            name: order.name,
-            description: order.description,
-            price: order.price,
-            inStock: order.inStock,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            userId: order.userId.toString(),
+            status: order.status as OrderStatus,
+            total: order.total as number,
+            createdAt: order.createdAt,
+            updatedAt: order.updatedAt as Date | string,
         };
     }
 }
