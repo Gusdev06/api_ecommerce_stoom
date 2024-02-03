@@ -27,11 +27,11 @@ describe("Delete Order", () => {
         inMemoryOrderOrderItemRepository.items.push(
             makeOrderOrderItem({
                 orderId: newOrder.id,
-                orderItemId: new UniqueEntityID("1"),
+                orderItensIds: new UniqueEntityID("1"),
             }),
             makeOrderOrderItem({
                 orderId: newOrder.id,
-                orderItemId: new UniqueEntityID("2"),
+                orderItensIds: new UniqueEntityID("2"),
             }),
         );
 

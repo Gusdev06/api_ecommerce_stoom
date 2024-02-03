@@ -29,7 +29,7 @@ describe("Edit Order", () => {
         inMemoryOrderOrderItemRepository.items.push(
             makeOrderOrderItem({
                 orderId: existingOrder.id,
-                orderItemId: new UniqueEntityID("1"),
+                orderItensIds: new UniqueEntityID("1"),
             }),
         );
 
