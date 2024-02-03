@@ -50,7 +50,7 @@ export class EditOrderUseCase
         );
         const orderOrderItens = orderItensIds.map((orderItemId) => {
             return OrderOrderitem.create({
-                orderItemId: new UniqueEntityID(orderItemId),
+                orderItensIds: new UniqueEntityID(orderItemId),
                 orderId: order.id,
             });
         });

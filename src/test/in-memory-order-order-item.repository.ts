@@ -6,6 +6,18 @@ export class InMemoryOrderOrderItemRepository
 {
     public items: OrderOrderitem[] = [];
 
+    async createMany(orderItens: OrderOrderitem[]): Promise<void> {
+        this.items.push(...orderItens);
+    }
+
+    async deleteMany(orderItens: OrderOrderitem[]): Promise<void> {
+        const orderOrderIten = this.items.filter(
+            (item) => !orderItens.some((orderItem) => orderItem.equals(item)),
+        );
+
+        this.items = orderOrderIten;
+    }
+
     async findManyByOrderId(orderId: string): Promise<OrderOrderitem[]> {
         return this.items.filter(
             (orderOrderItem) => orderOrderItem.orderId.toString() === orderId,

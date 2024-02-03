@@ -11,7 +11,7 @@ export function makeOrderOrderItem(
     const orderorderitem = OrderOrderitem.create(
         {
             orderId: new UniqueEntityID(),
-            orderItemId: new UniqueEntityID(),
+            orderItensIds: new UniqueEntityID(),
             ...override,
         },
         id,

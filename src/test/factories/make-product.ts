@@ -10,7 +10,7 @@ export function makeProduct(
         {
             name: faker.commerce.productName(),
             description: faker.commerce.productDescription(),
-            price: faker.number.float(),
+            price: faker.number.int(),
             inStock: faker.number.int(),
             ...override,
         },
