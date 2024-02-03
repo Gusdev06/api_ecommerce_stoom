@@ -1,17 +1,16 @@
 import { Entity } from "@/core/entities/entity";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
+import { ProductDetails } from "@/domain/products/entities/value-objects/product-details";
 
-export interface OrderItemProps {
-    id?: UniqueEntityID;
-    productId: UniqueEntityID;
-    orderId: UniqueEntityID;
+export interface OrderItemDetailsProps {
+    product: ProductDetails[];
     quantity: number;
     price: number;
     createdAt: Date;
     updatedAt?: Date;
 }
 
-export class OrderItem extends Entity<OrderItemProps> {
+export class OrderItemDetails extends Entity<OrderItemDetailsProps> {
     private touch() {
         this.props.updatedAt = new Date();
     }
@@ -20,8 +19,8 @@ export class OrderItem extends Entity<OrderItemProps> {
         return this.props.quantity;
     }
 
-    get orderId() {
-        return this.props.orderId;
+    get product() {
+        return this.props.product;
     }
 
     get price() {
@@ -44,18 +43,14 @@ export class OrderItem extends Entity<OrderItemProps> {
         return this.props.createdAt;
     }
 
-    get productId() {
-        return this.props.productId;
-    }
-
     set quantity(value: number) {
         this.props.quantity = value;
         this.touch();
     }
 
-    static create(props: OrderItemProps, id?: UniqueEntityID) {
-        const orderItem = new OrderItem(props, id);
-        return orderItem;
+    static create(props: OrderItemDetailsProps, id?: UniqueEntityID) {
+        const orderItemDetails = new OrderItemDetails(props, id);
+        return orderItemDetails;
     }
 }
 

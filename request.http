@@ -1,12 +1,12 @@
 @baseUrl = http://localhost:3333
 
 # @name create_account
-POST {{baseUrl}}/accounts
+POST {{baseUrl}}/users/register
 Content-Type: application/json
 
 {
   "name": "Gustavo Gomes",
-  "email": "gustavo@.com.br",
+  "email": "gustvo@.com.br",
   "password": "12345678",
   "address": "rua joao urizzi 421"
 
@@ -15,11 +15,11 @@ Content-Type: application/json
 ###
 
 # @name authenticate
-POST {{baseUrl}}/sessions
+POST {{baseUrl}}/users/auth
 Content-Type: application/json
 
 {
-  "email": "gustavo@.com.br",
+  "email": "gustvo@.com.br",
   "password": "12345678"
 }
 
@@ -31,15 +31,21 @@ POST {{baseUrl}}/orders
 Content-Type: application/json
 
 {
-
-  "total": 0,
+  "userId": "258362c4-8112-498c-89a1-7172e6926ea0",
   "itens": [
 
     {
-      "productId": "idDoProduto",
+      "productId": "0ad52234-fc7f-4b14-9907-44884aaee865",
+      "status": "NEW_ORDER",
       "quantity": 5
+    },
+    {
+      "productId": "0ad52234-fc7f-4b14-9907-44884aaee865",
+      "status": "NEW_ORDER",
+      "quantity": 2
     }
   ]
+
 }
 
 ###

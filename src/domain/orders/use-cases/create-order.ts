@@ -1,18 +1,20 @@
-import { Either, right } from "@/core/either";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import { IUseCase } from "@/core/protocols/IUseCase";
+
+import { Either, left, right } from "@/core/either";
+import { ProductRepository } from "@/domain/products/repositories/product-repository";
 import { Order } from "../entities/order";
-import { OrderOrderitem } from "../entities/order-order-item";
-import { OrderOrderitemList } from "../entities/order-order-item-list";
+import { OrderItem, OrderItemProps } from "../entities/order-item";
+import { NotFoundError } from "../errors/not-found-error";
 import { OrderRepository } from "../repositories/order-repository";
 
 export interface ICreateOrderDTO {
     userId: string;
-    orderItensIds: string[];
+    itens: OrderItemProps[];
 }
 
 type CreateOrderUseCaseResponse = Either<
-    null,
+    NotFoundError,
     {
         order: Order;
     }
@@ -20,24 +22,41 @@ type CreateOrderUseCaseResponse = Either<
 export class CreateOrderUseCase
     implements IUseCase<ICreateOrderDTO, CreateOrderUseCaseResponse>
 {
-    constructor(private readonly orderRepository: OrderRepository) {}
+    constructor(
+        private readonly orderRepository: OrderRepository,
+        private readonly productRepository: ProductRepository,
+    ) {}
 
     async execute({
         userId,
-        orderItensIds,
+        itens,
     }: ICreateOrderDTO): Promise<CreateOrderUseCaseResponse> {
         const order = Order.create({
             userId: new UniqueEntityID(userId),
-            updatedAt: new Date(),
-        });
-        const orderOrderItens = orderItensIds.map((orderItemId) => {
-            return OrderOrderitem.create({
-                orderItensIds: new UniqueEntityID(orderItemId),
-                orderId: order.id,
-            });
         });
 
-        order.itens = new OrderOrderitemList(orderOrderItens);
+        for (const item of itens) {
+            const product = await this.productRepository.findById(
+                item.productId.toString(),
+            );
+
+            if (!product) {
+                return left(new NotFoundError());
+            }
+
+            const orderItem = OrderItem.create({
+                productId: item.productId,
+                quantity: item.quantity,
+                price: product.price,
+                orderId: order.id,
+                createdAt: new Date(),
+            });
+
+            order.addItem(orderItem);
+        }
+
+        const total = order.calculateTotal();
+        order.total = total;
 
         await this.orderRepository.create(order);
 
@@ -46,71 +65,4 @@ export class CreateOrderUseCase
         });
     }
 }
-
-// import { UniqueEntityID } from "@/core/entities/unique-entity-id";
-// import { IUseCase } from "@/core/protocols/IUseCase";
-// import { ProductRepository } from "@/domain/products/repositories/product-repository";
-// import { Order } from "../entities/Order";
-// import { OrderItem } from "../entities/Order-item";
-// import { OrderRepository } from "../repositories/order-repository";
-
-// export interface ICreateOrderDTO {
-//     userId: string;
-//     itens: OrderItem[];
-// }
-
-// type CreateOrderUseCaseResponse = Either<
-//     null,
-//     {
-//         order: Order;
-//     }
-// >;
-// export class CreateOrderUseCase
-//     implements IUseCase<ICreateOrderDTO, CreateOrderUseCaseResponse>
-// {
-//     constructor(
-//         private readonly orderRepository: OrderRepository,
-//         private productRepository: ProductRepository,
-//     ) {}
-
-//     async execute({
-//         userId,
-//         itens,
-//     }: ICreateOrderDTO): Promise<CreateOrderUseCaseResponse> {
-//         const order = Order.create({
-//             userId: new UniqueEntityID(userId),
-//             itens,
-//             updatedAt: new Date(),
-//         });
-
-//         for (const item of itens) {
-//             try {
-//                 const product = await this.productRepository.findById(
-//                     item.productId,
-//                 );
-
-//                 if (product) {
-//                     item.calculatePrice(product.price);
-//                 }
-
-//                 const orderItem = OrderItem.create({
-//                     productId: item.productId,
-//                     quantity: item.quantity,
-//                     price: item.price,
-//                     createdAt: new Date(),
-//                 });
-
-//                 order.addItem(item);
-//             } catch (error) {
-//                 return left(null);
-//             }
-//         }
-
-//         await this.orderRepository.create(order);
-
-//         return right({
-//             order,
-//         });
-//     }
-// }
 

@@ -2,6 +2,7 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 import express from "express";
 import { errorHandler } from "./core/middlewares/errorHandler";
+import { OrderRoutes } from "./routes/order.routes";
 import { ProductRoutes } from "./routes/products.routes";
 import { userRoutes } from "./routes/users.routes";
 
@@ -20,6 +21,7 @@ app.get("/", (req, res) => {
 
 app.use("/users", userRoutes);
 app.use("/products", ProductRoutes);
+app.use("/orders", OrderRoutes);
 
 export default app;
 

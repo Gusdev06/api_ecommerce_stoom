@@ -1,11 +1,13 @@
 import { Order } from "@/domain/orders/entities/order";
-import { OrderOrderItemRepository } from "@/domain/orders/repositories/order-order-item-repository";
 import { OrderRepository } from "@/domain/orders/repositories/order-repository";
+import { InMemoryOrderItemRepository } from "./in-memory-order-item-repository";
 
 export class InMemoryOrderRepository implements OrderRepository {
     public items: Order[] = [];
 
-    constructor(private orderOrderItemRepository: OrderOrderItemRepository) {}
+    constructor(
+        private inMemoryOrderItemRepository: InMemoryOrderItemRepository,
+    ) {}
 
     async findById(id: string): Promise<Order | null> {
         const order = this.items.find((order) => order.id.toString() === id);
@@ -17,19 +19,17 @@ export class InMemoryOrderRepository implements OrderRepository {
         const index = this.items.findIndex((p) => p.id.equals(order.id));
 
         this.items[index] = order;
-        this.orderOrderItemRepository.createMany(order.itens.getNewItems());
-        this.orderOrderItemRepository.deleteMany(order.itens.getRemovedItems());
     }
 
     async create(order: Order): Promise<void> {
         this.items.push(order);
-        await this.orderOrderItemRepository.createMany(order.itens.getItems());
+        await this.inMemoryOrderItemRepository.createMany(
+            order.itens.getItems(),
+        );
     }
 
     async delete(order: Order): Promise<void> {
         this.items = this.items.filter((p) => !p.id.equals(order.id));
-
-        this.orderOrderItemRepository.deleteManyByOrderId(order.id.toString());
     }
 
     // async list({
