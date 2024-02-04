@@ -1,12 +1,12 @@
 @baseUrl = http://localhost:3333
-
+@authToken = {{authenticate.response.body.accessToken}}
 # @name create_account
 POST {{baseUrl}}/users/register
 Content-Type: application/json
 
 {
   "name": "Gustavo Gomes",
-  "email": "gustvo@.com.br",
+  "email": "gustvoa@.com.br",
   "password": "12345678",
   "address": "rua joao urizzi 421"
 
@@ -19,7 +19,7 @@ POST {{baseUrl}}/users/auth
 Content-Type: application/json
 
 {
-  "email": "gustvo@.com.br",
+  "email": "gustvoa@.com.br",
   "password": "12345678"
 }
 
@@ -27,25 +27,17 @@ Content-Type: application/json
 
 
 
-POST {{baseUrl}}/orders
+DELETE  {{baseUrl}}/orders/9e15a040-a81c-4c26-9f08-e729b721c769
 Content-Type: application/json
+Authorization: Bearer {{authToken}}
 
 {
-  "userId": "258362c4-8112-498c-89a1-7172e6926ea0",
   "itens": [
-
     {
-      "productId": "0ad52234-fc7f-4b14-9907-44884aaee865",
-      "status": "NEW_ORDER",
-      "quantity": 5
-    },
-    {
-      "productId": "0ad52234-fc7f-4b14-9907-44884aaee865",
-      "status": "NEW_ORDER",
-      "quantity": 2
+      "productId": "856d1820-f8e4-45c6-bb30-632788a9f736",
+      "quantity": 1
     }
   ]
-
 }
 
 ###

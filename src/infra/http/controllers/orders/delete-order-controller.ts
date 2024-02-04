@@ -1,14 +1,14 @@
 import { HttpStatusCode } from "@/core/constants/HttpStatusCode";
 import { IController } from "@/core/protocols/IController";
-import { CreateOrderUseCase } from "@/domain/orders/use-cases/create-order";
+import { DeleteOrderUseCase } from "@/domain/orders/use-cases/delete-order";
 import { OrdersPresenter } from "@/infra/database/presenters/order-presenter";
 
 import { NextFunction, Request, Response } from "express";
 
-export { CreateOrderController };
+export { DeleteOrderController };
 
-class CreateOrderController implements IController {
-    constructor(private readonly useCase: CreateOrderUseCase) {}
+class DeleteOrderController implements IController {
+    constructor(private readonly useCase: DeleteOrderUseCase) {}
 
     async handle(
         request: Request,
@@ -16,11 +16,9 @@ class CreateOrderController implements IController {
         next: NextFunction,
     ): Promise<void | Response<any, Record<string, any>>> {
         try {
-            const { itens } = request.body;
-            const userId = request.userId;
+            const { id } = request.params;
             const result = await this.useCase.execute({
-                userId,
-                itens,
+                id,
             });
 
             if (result.isLeft())
@@ -29,7 +27,7 @@ class CreateOrderController implements IController {
                     .json(result.value);
 
             return response
-                .status(HttpStatusCode.CREATED)
+                .status(HttpStatusCode.OK)
                 .json(OrdersPresenter.toHTTP(result.value?.order));
         } catch (error) {
             next(error);

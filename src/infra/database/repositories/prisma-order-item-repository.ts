@@ -10,11 +10,33 @@ class OrderItemPrismaRepository implements OrderItemRepository {
     constructor() {
         this.prismaClient = context.prisma;
     }
-    deleteMany(orderItens: OrderItem[]): Promise<void> {
-        throw new Error("Method not implemented.");
+    async deleteMany(orderItens: OrderItem[]): Promise<void> {
+        if (orderItens.length === 0) {
+            return;
+        }
+
+        const productIds = orderItens.map((orderItem) =>
+            orderItem.productId.toString(),
+        );
+
+        await this.prismaClient.orderItem.deleteMany({
+            where: {
+                productId: {
+                    in: productIds,
+                },
+            },
+        });
+
+        console.log("Deleted order itens", productIds);
     }
-    findManyByOrderId(orderId: string): Promise<OrderItem[]> {
-        throw new Error("Method not implemented.");
+    async findManyByOrderId(orderId: string): Promise<OrderItem[]> {
+        const orderItens = await this.prismaClient.orderItem.findMany({
+            where: {
+                orderId,
+            },
+        });
+
+        return orderItens.map(PrismaOrderItemMapper.toDomain);
     }
     deleteManyByOrderId(orderId: string): Promise<void> {
         throw new Error("Method not implemented.");

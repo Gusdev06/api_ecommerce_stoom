@@ -1,5 +1,6 @@
 import { Entity } from "@/core/entities/entity";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
+import { Optional } from "@/core/types/optional";
 
 export interface OrderItemProps {
     id?: UniqueEntityID;
@@ -53,8 +54,18 @@ export class OrderItem extends Entity<OrderItemProps> {
         this.touch();
     }
 
-    static create(props: OrderItemProps, id?: UniqueEntityID) {
-        const orderItem = new OrderItem(props, id);
+    static create(
+        props: Optional<OrderItemProps, "createdAt" | "updatedAt">,
+        id?: UniqueEntityID,
+    ) {
+        const orderItem = new OrderItem(
+            {
+                ...props,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            id,
+        );
         return orderItem;
     }
 }

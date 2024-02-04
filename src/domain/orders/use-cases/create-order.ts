@@ -6,6 +6,8 @@ import { ProductRepository } from "@/domain/products/repositories/product-reposi
 import { Order } from "../entities/order";
 import { OrderItem, OrderItemProps } from "../entities/order-item";
 import { NotFoundError } from "../errors/not-found-error";
+import { ProductOutOfStockError } from "../errors/product-out-of-stock";
+import { QuantityError } from "../errors/quantity-error";
 import { OrderRepository } from "../repositories/order-repository";
 
 export interface ICreateOrderDTO {
@@ -14,7 +16,7 @@ export interface ICreateOrderDTO {
 }
 
 type CreateOrderUseCaseResponse = Either<
-    NotFoundError,
+    NotFoundError | ProductOutOfStockError | QuantityError,
     {
         order: Order;
     }
@@ -44,6 +46,15 @@ export class CreateOrderUseCase
                 return left(new NotFoundError());
             }
 
+            if (product.inStock < item.quantity) {
+                return left(new ProductOutOfStockError());
+            }
+
+            if (product) {
+                product.inStock = product.inStock - item.quantity;
+                await this.productRepository.save(product);
+            }
+
             const orderItem = OrderItem.create({
                 productId: item.productId,
                 quantity: item.quantity,
@@ -52,12 +63,14 @@ export class CreateOrderUseCase
                 createdAt: new Date(),
             });
 
+            if (orderItem.quantity < 1) {
+                return left(new QuantityError());
+            }
             order.addItem(orderItem);
         }
 
         const total = order.calculateTotal();
         order.total = total;
-
         await this.orderRepository.create(order);
 
         return right({

@@ -30,26 +30,5 @@ export class PrismaOrderItemMapper {
             updatedAt: new Date(),
         };
     }
-
-    public static toPersistenceUpdateMany(
-        orderItens: OrderItem[],
-    ): Prisma.OrderItemUpdateManyArgs {
-        return {
-            data: orderItens.map((orderItem) => {
-                return {
-                    where: {
-                        id: orderItem.id.toString(),
-                    },
-                    data: {
-                        productId: orderItem.productId.toString(),
-                        quantity: orderItem.quantity,
-                        price: orderItem.price,
-                        orderId: orderItem.orderId.toString(),
-                        createdAt: orderItem.createdAt,
-                    },
-                };
-            }),
-        };
-    }
 }
 

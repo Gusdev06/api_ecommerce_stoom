@@ -32,7 +32,9 @@ class OrderPrismaRepository implements OrderRepository {
                 where: { id: data.id },
                 data,
             }),
-            this.orderItensRepository.createMany(order.itens.getItems()),
+            this.orderItensRepository.createMany(order.itens.getNewItems()),
+            this.orderItensRepository.deleteMany(order.itens.getRemovedItems()),
+            console.log(order.itens.getNewItems()),
         ]);
     }
 
@@ -47,6 +49,9 @@ class OrderPrismaRepository implements OrderRepository {
     }
 
     async delete(order: Order): Promise<void> {
+        await this.prismaClient.orderItem.deleteMany({
+            where: { orderId: order.id.toString() },
+        });
         await this.prismaClient.order.delete({
             where: { id: order.id.toString() },
         });

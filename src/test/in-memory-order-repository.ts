@@ -19,6 +19,12 @@ export class InMemoryOrderRepository implements OrderRepository {
         const index = this.items.findIndex((p) => p.id.equals(order.id));
 
         this.items[index] = order;
+        await this.inMemoryOrderItemRepository.createMany(
+            order.itens.getNewItems(),
+        );
+        await this.inMemoryOrderItemRepository.deleteMany(
+            order.itens.getRemovedItems(),
+        );
     }
 
     async create(order: Order): Promise<void> {

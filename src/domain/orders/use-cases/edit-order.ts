@@ -1,19 +1,18 @@
 import { Either, left, right } from "@/core/either";
+import { OrderItemRepository } from "@/domain/orders/repositories/order-item-repository";
+import { ProductRepository } from "@/domain/products/repositories/product-repository";
 
 import { IUseCase } from "@/core/protocols/IUseCase";
 
-import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import { NotFoundError } from "@/domain/products/errors/not-found-error";
 import { Order } from "../entities/order";
-import { OrderOrderitem } from "../entities/order-order-item";
-import { OrderOrderitemList } from "../entities/order-order-item-list";
-import { OrderOrderItemRepository } from "../repositories/order-order-item-repository";
+import { OrderItem, OrderItemProps } from "../entities/order-item";
+import { OrderitemList } from "../entities/order-item-list";
 import { OrderRepository } from "../repositories/order-repository";
 
 interface EditOrderUseCaseRequest {
     id: string;
-    status: string;
-    orderItensIds: string[];
+    itens: OrderItemProps[];
 }
 
 type EditOrderUseCaseResponse = Either<
@@ -28,38 +27,46 @@ export class EditOrderUseCase
 {
     constructor(
         private orderRepository: OrderRepository,
-        private orderOrderItemRepository: OrderOrderItemRepository,
+        private orderItemRepository: OrderItemRepository,
+        private productRepository: ProductRepository,
     ) {}
 
     async execute({
         id,
-        status,
-        orderItensIds,
+        itens,
     }: EditOrderUseCaseRequest): Promise<EditOrderUseCaseResponse> {
         const order = await this.orderRepository.findById(id);
 
         if (!order) {
             return left(new NotFoundError());
         }
+        const currentOrderItens =
+            await this.orderItemRepository.findManyByOrderId(
+                order.id.toString(),
+            );
 
-        const currentOrderOrderItens =
-            await this.orderOrderItemRepository.findManyByOrderId(id);
+        const orderList = new OrderitemList(currentOrderItens);
 
-        const orderOrderItemList = new OrderOrderitemList(
-            currentOrderOrderItens,
-        );
-        const orderOrderItens = orderItensIds.map((orderItemId) => {
-            return OrderOrderitem.create({
-                orderItensIds: new UniqueEntityID(orderItemId),
+        const orderItens = itens.map((item) => {
+            return OrderItem.create({
+                ...item,
                 orderId: order.id,
             });
         });
-
-        orderOrderItemList.update(orderOrderItens);
-
-        order.status = status;
-        order.itens = orderOrderItemList;
-
+        for (const orderItem of orderItens) {
+            const product = await this.productRepository.findById(
+                orderItem.productId.toString(),
+            );
+            if (!product) {
+                return left(new NotFoundError());
+            }
+            orderItem.price = product.price * orderItem.quantity;
+        }
+        orderList.update(orderItens);
+        order.itens = orderList;
+        order.total = orderList
+            .getItems()
+            .reduce((total, item) => total + item.price, 0);
         await this.orderRepository.save(order);
 
         return right({

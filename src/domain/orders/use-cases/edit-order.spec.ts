@@ -1,86 +1,145 @@
-import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import { makeOrder } from "@/test/factories/make-order";
-import { makeOrderOrderItem } from "@/test/factories/make-order-order-item";
-import { InMemoryOrderOrderItemRepository } from "@/test/in-memory-order-order-item.repository";
+
+import { UniqueEntityID } from "@/core/entities/unique-entity-id";
+import { makeOrderitem } from "@/test/factories/make-order-item";
+import { makeProduct } from "@/test/factories/make-product";
+import { InMemoryOrderItemRepository } from "@/test/in-memory-order-item-repository";
 import { InMemoryOrderRepository } from "@/test/in-memory-order-repository";
+import { InMemoryProductRepository } from "@/test/in-memory-product-repository";
 import { EditOrderUseCase } from "./edit-order";
 
 let inMemoryOrdersRepository: InMemoryOrderRepository;
-let inMemoryOrderOrderItemRepository: InMemoryOrderOrderItemRepository;
+let inMemoryOrderItemRepository: InMemoryOrderItemRepository;
+let inMemoryProductRepository: InMemoryProductRepository;
 let sut: EditOrderUseCase;
 
 describe("Edit Order", () => {
     beforeEach(() => {
-        inMemoryOrderOrderItemRepository =
-            new InMemoryOrderOrderItemRepository();
+        inMemoryProductRepository = new InMemoryProductRepository();
+        inMemoryOrderItemRepository = new InMemoryOrderItemRepository();
         inMemoryOrdersRepository = new InMemoryOrderRepository(
-            inMemoryOrderOrderItemRepository,
+            inMemoryOrderItemRepository,
         );
         sut = new EditOrderUseCase(
             inMemoryOrdersRepository,
-            inMemoryOrderOrderItemRepository,
+            inMemoryOrderItemRepository,
         );
     });
 
     it("should edit an order", async () => {
-        const existingOrder = makeOrder();
+        const existingOrder = makeOrder({
+            status: "pending",
+            total: 0,
+        });
         inMemoryOrdersRepository.create(existingOrder);
 
-        inMemoryOrderOrderItemRepository.items.push(
-            makeOrderOrderItem({
-                orderId: existingOrder.id,
-                orderItensIds: new UniqueEntityID("1"),
-            }),
+        const newProduct = makeProduct(
+            {
+                price: 25.0,
+            },
+            new UniqueEntityID("1"),
+        );
+        const newProduct2 = makeProduct(
+            {
+                price: 30.0,
+            },
+            new UniqueEntityID("2"),
         );
 
-        await sut.execute({
-            id: existingOrder.id.toValue(),
-            orderItensIds: ["1", "3"],
+        const newProduct3 = makeProduct(
+            {
+                price: 20.0,
+            },
+            new UniqueEntityID("2"),
+        );
+        await inMemoryProductRepository.create(newProduct);
+        await inMemoryProductRepository.create(newProduct2);
+        await inMemoryProductRepository.create(newProduct3);
+        inMemoryOrderItemRepository.items.push(
+            makeOrderitem({
+                orderId: existingOrder.id,
+                productId: newProduct.id,
+                price: 11,
+            }),
+            makeOrderitem({
+                orderId: existingOrder.id,
+                productId: newProduct2.id,
+                price: 12,
+            }),
+        );
+        console.log(inMemoryOrderItemRepository.items);
+        const result = await sut.execute({
+            id: existingOrder.id.toString(),
             status: "completed",
+            itens: [
+                makeOrderitem({
+                    orderId: existingOrder.id,
+                    productId: newProduct3.id,
+                    price: 13,
+                }),
+            ],
         });
 
-        expect(
-            inMemoryOrdersRepository.items[0].itens.currentItems,
-        ).toHaveLength(2);
-        expect(inMemoryOrdersRepository.items[0].itens.currentItems).toEqual([
-            expect.objectContaining({ orderItensIds: new UniqueEntityID("1") }),
-            expect.objectContaining({ orderItensIds: new UniqueEntityID("3") }),
-        ]);
+        expect(result.isRight()).toBe(true);
+        expect(inMemoryOrderItemRepository.items).toHaveLength(1);
     });
 
-    it("should sync new and removed orderItens when editing an order", async () => {
-        const existingOrder = makeOrder();
+    it("should sync new and removed itens when editing an order", async () => {
+        const existingOrder = makeOrder({
+            status: "pending",
+            total: 0,
+        });
         inMemoryOrdersRepository.create(existingOrder);
 
-        inMemoryOrderOrderItemRepository.items.push(
-            makeOrderOrderItem({
+        const newProduct = makeProduct(
+            {
+                price: 25.0,
+            },
+            new UniqueEntityID("1"),
+        );
+        const newProduct2 = makeProduct(
+            {
+                price: 30.0,
+            },
+            new UniqueEntityID("2"),
+        );
+
+        const newProduct3 = makeProduct(
+            {
+                price: 20.0,
+            },
+            new UniqueEntityID("2"),
+        );
+        await inMemoryProductRepository.create(newProduct);
+        await inMemoryProductRepository.create(newProduct2);
+        await inMemoryProductRepository.create(newProduct3);
+        inMemoryOrderItemRepository.items.push(
+            makeOrderitem({
                 orderId: existingOrder.id,
-                orderItensIds: new UniqueEntityID("1"),
+                productId: newProduct.id,
+                price: 11,
             }),
-            makeOrderOrderItem({
+            makeOrderitem({
                 orderId: existingOrder.id,
-                orderItensIds: new UniqueEntityID("2"),
+                productId: newProduct2.id,
+                price: 12,
             }),
         );
 
         const result = await sut.execute({
-            id: existingOrder.id.toValue(),
-            orderItensIds: ["1", "3"],
+            id: existingOrder.id.toString(),
             status: "completed",
+            itens: [
+                makeOrderitem({
+                    orderId: existingOrder.id,
+                    productId: newProduct3.id,
+                    price: 13,
+                }),
+            ],
         });
 
-        expect(result.isRight()).toBeTruthy();
-        expect(inMemoryOrderOrderItemRepository.items).toHaveLength(2);
-        expect(inMemoryOrderOrderItemRepository.items).toEqual(
-            expect.arrayContaining([
-                expect.objectContaining({
-                    orderItensIds: new UniqueEntityID("1"),
-                }),
-                expect.objectContaining({
-                    orderItensIds: new UniqueEntityID("3"),
-                }),
-            ]),
-        );
+        expect(result.isRight()).toBe(true);
+        expect(inMemoryOrderItemRepository.items).toHaveLength(1);
     });
 });
 

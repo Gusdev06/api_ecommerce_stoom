@@ -1,20 +1,20 @@
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import { makeOrder } from "@/test/factories/make-order";
-import { makeOrderOrderItem } from "@/test/factories/make-order-order-item";
-import { InMemoryOrderOrderItemRepository } from "@/test/in-memory-order-order-item.repository";
+
+import { makeOrderitem } from "@/test/factories/make-order-item";
+import { InMemoryOrderItemRepository } from "@/test/in-memory-order-item-repository";
 import { InMemoryOrderRepository } from "@/test/in-memory-order-repository";
 import { DeleteOrderUseCase } from "./delete-order";
 
 let inMemoryOrdersRepository: InMemoryOrderRepository;
-let inMemoryOrderOrderItemRepository: InMemoryOrderOrderItemRepository;
+let inMemoryOrderItemRepository: InMemoryOrderItemRepository;
 let sut: DeleteOrderUseCase;
 
 describe("Delete Order", () => {
     beforeEach(() => {
-        inMemoryOrderOrderItemRepository =
-            new InMemoryOrderOrderItemRepository();
+        inMemoryOrderItemRepository = new InMemoryOrderItemRepository();
         inMemoryOrdersRepository = new InMemoryOrderRepository(
-            inMemoryOrderOrderItemRepository,
+            inMemoryOrderItemRepository,
         );
         sut = new DeleteOrderUseCase(inMemoryOrdersRepository);
     });
@@ -24,15 +24,8 @@ describe("Delete Order", () => {
 
         await inMemoryOrdersRepository.create(newOrder);
 
-        inMemoryOrderOrderItemRepository.items.push(
-            makeOrderOrderItem({
-                orderId: newOrder.id,
-                orderItensIds: new UniqueEntityID("1"),
-            }),
-            makeOrderOrderItem({
-                orderId: newOrder.id,
-                orderItensIds: new UniqueEntityID("2"),
-            }),
+        inMemoryOrderItemRepository.items.push(
+            makeOrderitem({ orderId: newOrder.id }),
         );
 
         const result = await sut.execute({
@@ -41,7 +34,6 @@ describe("Delete Order", () => {
 
         expect(result.isRight()).toBe(true);
         expect(inMemoryOrdersRepository.items).toHaveLength(0);
-        expect(inMemoryOrderOrderItemRepository.items).toHaveLength(0);
     });
 });
 

@@ -31,11 +31,11 @@ export class InMemoryOrderItemRepository implements OrderItemRepository {
     }
 
     async deleteManyByOrderId(orderId: string): Promise<void> {
-        const orderOrderItens = this.items.filter(
+        const orderItens = this.items.filter(
             (orderOrderItem) => orderOrderItem.orderId.toString() !== orderId,
         );
 
-        this.items = orderOrderItens;
+        this.items = orderItens;
     }
 
     // async list({
