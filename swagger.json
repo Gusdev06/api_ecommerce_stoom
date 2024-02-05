@@ -286,6 +286,8 @@
                             "examples": {
                                 "Products": {
                                     "value": {
+                                        "name": "Apple Pro Vission",
+                                        "description": "Óculos Virtual 256gb",
                                         "price": 30000,
                                         "inStock": 544
                                     }

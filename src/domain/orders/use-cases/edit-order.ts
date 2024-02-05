@@ -8,6 +8,7 @@ import { Order } from "../entities/order";
 import { OrderItem, OrderItemProps } from "../entities/order-item";
 import { OrderitemList } from "../entities/order-item-list";
 import { NotFoundError } from "../errors/not-found-error";
+import { ProductOutOfStockError } from "../errors/product-out-of-stock";
 import { QuantityError } from "../errors/quantity-error";
 import { OrderRepository } from "../repositories/order-repository";
 
@@ -18,7 +19,7 @@ interface EditOrderUseCaseRequest {
 }
 
 type EditOrderUseCaseResponse = Either<
-    NotFoundError | QuantityError,
+    NotFoundError | QuantityError | ProductOutOfStockError,
     {
         order: Order;
     }
@@ -54,9 +55,19 @@ export class EditOrderUseCase
                 const product = await this.productRepository.findById(
                     item.productId.toString(),
                 );
+
                 if (item.quantity < 1) {
                     throw new QuantityError();
                 }
+
+                if (product) {
+                    if (product.inStock < item.quantity) {
+                        throw new ProductOutOfStockError();
+                    }
+                    product.inStock = product.inStock - item.quantity;
+                    await this.productRepository.save(product);
+                }
+
                 return OrderItem.create({
                     ...item,
                     orderId: order.id,
