@@ -34,7 +34,7 @@ v1.0.0
 
 ### O projeto está utilizando o package manager 'npm' para lidar com os pacotes no node, sendo assim, para baixar as dependencias do projeto basta rodar o comando:
 
--   `npm run install` na raiz do projeto
+-   `npm install` na raiz do projeto
 
 ## Configurando variáveis de ambiente
 

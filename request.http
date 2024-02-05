@@ -8,7 +8,6 @@ Content-Type: application/json
   "name": "Gustavo Gomes",
   "email": "gustvoa@.com.br",
   "password": "12345678",
-  "address": "rua joao urizzi 421"
 
 }
 
