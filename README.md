@@ -62,7 +62,9 @@ Caso queira, com o prisma eu criei alguns seeders para que o banco de dados ja v
 
 Para rodar o projeto utilize o script `npm run dev`
 
----
+## Documentação da api Swagger
+
+http://localhost:3333/api-docs
 
 ## Testes com jest
 
