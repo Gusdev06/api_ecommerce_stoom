@@ -1,5 +1,5 @@
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
-import { Order, OrderProps } from "@/domain/orders/entities/order";
+import { Order, OrderProps, Status } from "@/domain/orders/entities/order";
 
 import { faker } from "@faker-js/faker";
 
@@ -10,7 +10,7 @@ export function makeOrder(
     const order = Order.create(
         {
             userId: new UniqueEntityID(),
-            status: "pending",
+            status: Status.NEW_ORDER,
             total: faker.number.float(),
             updatedAt: undefined,
             ...override,

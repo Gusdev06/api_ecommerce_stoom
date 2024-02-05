@@ -1,46 +1,51 @@
-import { AggregateRoot } from "@/core/entities/aggregate-root";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
-import { OrderItemDetails } from "./order-item-details";
+import { ValueObject } from "@/core/entities/value-obeject";
+
+export interface IOrderDetailsProps {
+    quantity: number;
+    price: number;
+    product: {
+        id: string;
+        name: string;
+        description: string;
+        price: number;
+    };
+}
+
+export interface IUserProps {
+    id: UniqueEntityID;
+    name: string;
+    email: string;
+}
 
 export interface OrderDetailsProps {
-    userId: UniqueEntityID;
-    itens: OrderItemDetails[];
+    orderId: UniqueEntityID;
+    itens: IOrderDetailsProps[];
+    user: IUserProps;
     status: string;
     total: number;
     createdAt: Date;
     updatedAt?: Date | null;
 }
 
-export class OrderDetails extends AggregateRoot<OrderDetailsProps> {
+export class OrderDetails extends ValueObject<OrderDetailsProps> {
     get itens() {
         return this.props.itens;
-    }
-
-    set itens(value: OrderItemDetails[]) {
-        this.props.itens = value;
-        this.touch();
-    }
-
-    get userId() {
-        return this.props.userId;
     }
 
     get status() {
         return this.props.status;
     }
 
-    set status(value: string) {
-        this.props.status = value;
-        this.touch();
+    get user() {
+        return this.props.user;
+    }
+    get orderId() {
+        return this.props.orderId;
     }
 
     get total() {
         return this.props.total;
-    }
-
-    set total(value: number) {
-        this.props.total = value;
-        this.touch();
     }
 
     get createdAt() {
@@ -51,13 +56,8 @@ export class OrderDetails extends AggregateRoot<OrderDetailsProps> {
         return this.props.updatedAt;
     }
 
-    private touch() {
-        this.props.updatedAt = new Date();
-    }
-
-    static create(props: OrderDetailsProps, id?: UniqueEntityID) {
-        const orderDetails = new OrderDetails(props, id);
-        return orderDetails;
+    static create(props: OrderDetailsProps) {
+        return new OrderDetails(props);
     }
 }
 

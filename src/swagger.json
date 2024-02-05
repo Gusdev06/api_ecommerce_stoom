@@ -1,0 +1,650 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Api Ecommerce - Stoom",
+        "contact": {
+            "email": "gugomes688@hotmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3333/"
+        }
+    ],
+    "paths": {
+        "/users/register": {
+            "post": {
+                "summary": "Cria um usuario",
+                "description": "Cria um usuario",
+                "tags": ["Users"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Users"
+                            },
+                            "examples": {
+                                "Users": {
+                                    "value": {
+                                        "name": "Gustavo",
+                                        "email": "gusdev@gmail.com",
+                                        "password": "Developer012@"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "201": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Users"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
+        "/users/auth": {
+            "post": {
+                "summary": "Autentica um usuario",
+                "description": "Autentica um usuario",
+                "tags": ["Users"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Users"
+                            },
+                            "examples": {
+                                "Users": {
+                                    "value": {
+                                        "email": "gusdev@gmail.com",
+                                        "password": "Developer012@"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "201": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Users"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
+        "/products": {
+            "post": {
+                "summary": "Cria um produto",
+                "description": "Cria um produto",
+                "tags": ["Products"],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Products"
+                            },
+                            "examples": {
+                                "Products": {
+                                    "value": {
+                                        "name": "Apple Pro Vission",
+                                        "description": "Óculos Virtual 256gb",
+                                        "price": 30000,
+                                        "inStock": 544
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Products"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Products"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Products"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Products"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "summary": "Lista todas os produtos",
+                "tags": ["Products"],
+
+                "responses": {
+                    "201": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Products"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{id}": {
+            "get": {
+                "summary": "Busca um produto pelo id",
+                "tags": ["Products"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id do produto a ser buscado",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Produto encontrado"
+                    },
+                    "404": {
+                        "description": "Produto não encontrado"
+                    },
+                    "400": {
+                        "description": "Solicitação inválida"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            },
+
+            "put": {
+                "summary": "Atualiza um produto existente pelo id",
+                "tags": ["Products"],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id do produto a ser Atualizado",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Products"
+                            },
+                            "examples": {
+                                "Products": {
+                                    "value": {
+                                        "price": 30000,
+                                        "inStock": 544
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Produto deletado com sucesso"
+                    },
+                    "404": {
+                        "description": "Produto não encontrado"
+                    },
+                    "400": {
+                        "description": "Solicitação inválida"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            },
+
+            "delete": {
+                "summary": "Deleta um produto pelo id",
+                "tags": ["Products"],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id do produto a ser deletado",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Produto deletado com sucesso"
+                    },
+                    "404": {
+                        "description": "Produto não encontrado"
+                    },
+                    "400": {
+                        "description": "Solicitação inválida"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+
+        "/orders": {
+            "post": {
+                "summary": "Cria um pedido",
+                "description": "Cria um pedido",
+                "tags": ["Orders"],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Orders"
+                            },
+                            "examples": {
+                                "Orders": {
+                                    "value": {
+                                        "itens": [
+                                            {
+                                                "productId": "1e042ab6-6fd9-496d-a0c2-34188a01cc34",
+                                                "quantity": 34
+                                            },
+                                            {
+                                                "productId": "1e042ab6-6fd9-496d-a0c2-34188a01cc34",
+                                                "quantity": 5
+                                            },
+                                            {
+                                                "productId": "1e042ab6-6fd9-496d-a0c2-34188a01cc34",
+                                                "quantity": 4
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "201": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Orders"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    }
+                }
+            },
+            "get": {
+                "summary": "Lista todas os pedidos",
+                "tags": ["Orders"],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "201": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Orders"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
+        "/orders/{id}": {
+            "put": {
+                "summary": "Atualiza os itens de um pedido",
+                "tags": ["Orders"],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id do pedido a ser atualizado",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Para atualizar o pedido, voce pode manter os produtos que deseja e adicionar novos, ou remover os que não deseja mais, voce pode tambem alterar apenas a quantidade dos pedidos",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Orders"
+                            },
+                            "examples": {
+                                "Orders": {
+                                    "value": {
+                                        "itens": [
+                                            {
+                                                "productId": "1e042ab6-6fd9-496d-a0c2-34188a01cc34",
+                                                "quantity": 34
+                                            },
+                                            {
+                                                "productId": "1e042ab6-6fd9-496d-a0c2-34188a01cc34",
+                                                "quantity": 5
+                                            },
+                                            {
+                                                "productId": "1e042ab6-6fd9-496d-a0c2-34188a01cc34",
+                                                "quantity": 4
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Pedido encontrado"
+                    },
+                    "404": {
+                        "description": "Pedido não encontrado"
+                    },
+                    "400": {
+                        "description": "Solicitação inválida"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/orders/status/{id}": {
+            "put": {
+                "summary": "Atualiza apenas o status de um pedido",
+
+                "tags": ["Orders"],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id do pedido a ser atualizado",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Acesse o schema Status para ver os status disponiveis para atualização",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Status"
+                            },
+                            "examples": {
+                                "Orders": {
+                                    "value": {
+                                        "status": "PROCESSING_ORDER"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Pedido encontrado"
+                    }
+                }
+            }
+        }
+    },
+
+    "components": {
+        "schemas": {
+            "Products": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Nome do produto"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Descrição do produto"
+                    },
+                    "price": {
+                        "type": "number",
+                        "description": "Preço do produto"
+                    },
+                    "inStock": {
+                        "type": "number",
+                        "description": "Quantidade em estoque"
+                    }
+                }
+            },
+            "Users": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Orders": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "itens": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "productId": {
+                                    "type": "number"
+                                },
+                                "quantity": {
+                                    "type": "number"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "Status": {
+                "type": "enum",
+                "enum": [
+                    "NEW_ORDER",
+                    "PROCESSING_ORDER",
+                    "DISPATCHED_ORDER",
+                    "DELIVERED_ORDER"
+                ]
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}
+

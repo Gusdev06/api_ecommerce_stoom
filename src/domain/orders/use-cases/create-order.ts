@@ -5,7 +5,8 @@ import { Either, left, right } from "@/core/either";
 import { ProductRepository } from "@/domain/products/repositories/product-repository";
 import { Order } from "../entities/order";
 import { OrderItem, OrderItemProps } from "../entities/order-item";
-import { NotFoundError } from "../errors/not-found-error";
+
+import { NotFoundError } from "@/domain/products/errors/not-found-error";
 import { ProductOutOfStockError } from "../errors/product-out-of-stock";
 import { QuantityError } from "../errors/quantity-error";
 import { OrderRepository } from "../repositories/order-repository";

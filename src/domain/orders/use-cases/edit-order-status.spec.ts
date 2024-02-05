@@ -6,30 +6,28 @@ import { makeProduct } from "@/test/factories/make-product";
 import { InMemoryOrderItemRepository } from "@/test/in-memory-order-item-repository";
 import { InMemoryOrderRepository } from "@/test/in-memory-order-repository";
 import { InMemoryProductRepository } from "@/test/in-memory-product-repository";
-import { EditOrderUseCase } from "./edit-order";
+import { Status } from "../entities/order";
+import { EditOrderStatusUseCase } from "./edit-order-status";
 
 let inMemoryOrdersRepository: InMemoryOrderRepository;
 let inMemoryOrderItemRepository: InMemoryOrderItemRepository;
 let inMemoryProductRepository: InMemoryProductRepository;
-let sut: EditOrderUseCase;
+let sut: EditOrderStatusUseCase;
 
-describe("Edit Order", () => {
+describe("Edit stuts Order", () => {
     beforeEach(() => {
         inMemoryProductRepository = new InMemoryProductRepository();
         inMemoryOrderItemRepository = new InMemoryOrderItemRepository();
         inMemoryOrdersRepository = new InMemoryOrderRepository(
             inMemoryOrderItemRepository,
         );
-        sut = new EditOrderUseCase(
-            inMemoryOrdersRepository,
-            inMemoryOrderItemRepository,
-            inMemoryProductRepository,
-        );
+        sut = new EditOrderStatusUseCase(inMemoryOrdersRepository);
     });
 
-    it("should edit an order", async () => {
+    it("should edit an order status", async () => {
         const existingOrder = makeOrder({
             total: 0,
+            status: Status.NEW_ORDER,
         });
         inMemoryOrdersRepository.create(existingOrder);
 
@@ -59,84 +57,27 @@ describe("Edit Order", () => {
             makeOrderitem({
                 orderId: existingOrder.id,
                 productId: newProduct.id,
-                price: 11,
-            }),
-            makeOrderitem({
-                orderId: existingOrder.id,
-                productId: newProduct2.id,
-                price: 12,
+                price: newProduct.price,
+                quantity: 1,
             }),
         );
-
-        const result = await sut.execute({
-            id: existingOrder.id.toString(),
-            itens: [
-                makeOrderitem({
-                    orderId: existingOrder.id,
-                    productId: newProduct3.id,
-                    price: 13,
-                }),
-            ],
-        });
-
-        expect(result.isRight()).toBe(true);
-        expect(inMemoryOrderItemRepository.items).toHaveLength(1);
-    });
-
-    it("should sync new and removed itens when editing an order", async () => {
-        const existingOrder = makeOrder({
-            total: 0,
-        });
-        inMemoryOrdersRepository.create(existingOrder);
-
-        const newProduct = makeProduct(
-            {
-                price: 25.0,
-            },
-            new UniqueEntityID("1"),
-        );
-        const newProduct2 = makeProduct(
-            {
-                price: 30.0,
-            },
-            new UniqueEntityID("2"),
-        );
-
-        const newProduct3 = makeProduct(
-            {
-                price: 20.0,
-            },
-            new UniqueEntityID("2"),
-        );
-        await inMemoryProductRepository.create(newProduct);
-        await inMemoryProductRepository.create(newProduct2);
-        await inMemoryProductRepository.create(newProduct3);
         inMemoryOrderItemRepository.items.push(
             makeOrderitem({
                 orderId: existingOrder.id,
-                productId: newProduct.id,
-                price: 11,
-            }),
-            makeOrderitem({
-                orderId: existingOrder.id,
                 productId: newProduct2.id,
-                price: 12,
+                price: newProduct2.price,
+                quantity: 2,
             }),
         );
-
         const result = await sut.execute({
             id: existingOrder.id.toString(),
-            itens: [
-                makeOrderitem({
-                    orderId: existingOrder.id,
-                    productId: newProduct3.id,
-                    price: 13,
-                }),
-            ],
+            status: Status.PROCESSING_ORDER,
         });
 
         expect(result.isRight()).toBe(true);
-        expect(inMemoryOrderItemRepository.items).toHaveLength(1);
+        expect(inMemoryOrdersRepository.items[0].status).toBe(
+            "PROCESSING_ORDER",
+        );
     });
 });
 

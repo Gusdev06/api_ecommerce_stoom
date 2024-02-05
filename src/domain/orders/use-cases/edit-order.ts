@@ -8,15 +8,17 @@ import { NotFoundError } from "@/domain/products/errors/not-found-error";
 import { Order } from "../entities/order";
 import { OrderItem, OrderItemProps } from "../entities/order-item";
 import { OrderitemList } from "../entities/order-item-list";
+import { QuantityError } from "../errors/quantity-error";
 import { OrderRepository } from "../repositories/order-repository";
 
 interface EditOrderUseCaseRequest {
     id: string;
+
     itens: OrderItemProps[];
 }
 
 type EditOrderUseCaseResponse = Either<
-    NotFoundError,
+    NotFoundError | QuantityError,
     {
         order: Order;
     }
@@ -47,21 +49,22 @@ export class EditOrderUseCase
 
         const orderList = new OrderitemList(currentOrderItens);
 
-        const orderItens = itens.map((item) => {
-            return OrderItem.create({
-                ...item,
-                orderId: order.id,
-            });
-        });
-        for (const orderItem of orderItens) {
-            const product = await this.productRepository.findById(
-                orderItem.productId.toString(),
-            );
-            if (!product) {
-                return left(new NotFoundError());
-            }
-            orderItem.price = product.price * orderItem.quantity;
-        }
+        const orderItens = await Promise.all(
+            itens.map(async (item) => {
+                const product = await this.productRepository.findById(
+                    item.productId.toString(),
+                );
+                if (item.quantity < 1) {
+                    throw new QuantityError();
+                }
+                return OrderItem.create({
+                    ...item,
+                    orderId: order.id,
+                    price: product!.price * item.quantity,
+                });
+            }),
+        );
+
         orderList.update(orderItens);
         order.itens = orderList;
         order.total = orderList

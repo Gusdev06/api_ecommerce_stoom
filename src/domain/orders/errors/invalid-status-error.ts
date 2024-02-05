@@ -1,9 +1,9 @@
 import { HttpStatusCode } from "@/core/constants/HttpStatusCode";
 import { ErrorHandler } from "@/core/errors/ErrorHandler";
 
-export class NotFoundError extends ErrorHandler {
+export class InvalidStatusError extends ErrorHandler {
     constructor() {
-        super("Order not found", HttpStatusCode.NOT_FOUND);
+        super("type status invalid ", HttpStatusCode.NOT_ACCEPTABLE);
     }
 }
 

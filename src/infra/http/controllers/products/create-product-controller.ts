@@ -27,7 +27,7 @@ class CreateProductController implements IController {
 
             if (result.isLeft())
                 return response
-                    .status(HttpStatusCode.BAD_REQUEST)
+                    .status(HttpStatusCode.NOT_ACCEPTABLE)
                     .json(result.value);
 
             return response

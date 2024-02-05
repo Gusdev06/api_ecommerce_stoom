@@ -1,5 +1,5 @@
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
-import { Order } from "@/domain/orders/entities/order";
+import { Order, Status } from "@/domain/orders/entities/order";
 
 import { OrderStatus, Prisma, Order as PrismaOrder } from "@prisma/client";
 
@@ -8,7 +8,7 @@ export class PrismaOrderMapper {
         return Order.create(
             {
                 userId: new UniqueEntityID(raw.userId),
-                status: raw.status,
+                status: raw.status as Status,
                 createdAt: raw.createdAt,
                 updatedAt: raw.updatedAt,
             },

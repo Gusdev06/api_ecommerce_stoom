@@ -1,14 +1,15 @@
-import { Entity } from "@/core/entities/entity";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
+import { ValueObject } from "@/core/entities/value-obeject";
 
 export interface ProductDetailsProps {
+    productId: UniqueEntityID;
     name: string;
     description: string;
     price: number;
     inStock: number;
 }
 
-export class ProductDetails extends Entity<ProductDetailsProps> {
+export class ProductDetails extends ValueObject<ProductDetailsProps> {
     get name() {
         return this.props.name;
     }
@@ -20,6 +21,9 @@ export class ProductDetails extends Entity<ProductDetailsProps> {
         return this.props.description;
     }
 
+    get productId() {
+        return this.props.productId;
+    }
     set description(description: string) {
         this.props.description = description;
     }
@@ -28,20 +32,13 @@ export class ProductDetails extends Entity<ProductDetailsProps> {
         return this.props.price;
     }
 
-    set price(price: number) {
-        this.props.price = price;
-    }
-
     get inStock() {
         return this.props.inStock;
     }
 
-    set inStock(inStock: number) {
-        this.props.inStock = inStock;
-    }
-
-    static create(props: ProductDetailsProps, id?: UniqueEntityID) {
-        new ProductDetails(props, id);
+    static create(props: ProductDetailsProps) {
+        const productDetals = new ProductDetails(props);
+        return productDetals;
     }
 }
 

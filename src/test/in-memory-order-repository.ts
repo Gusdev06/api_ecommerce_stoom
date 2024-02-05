@@ -1,10 +1,15 @@
 import { Order } from "@/domain/orders/entities/order";
-import { OrderRepository } from "@/domain/orders/repositories/order-repository";
+import { OrderDetails } from "@/domain/orders/entities/value-objects/order-details";
+import {
+    IListOrdersRequest,
+    IListOrdersResponse,
+    OrderRepository,
+} from "@/domain/orders/repositories/order-repository";
 import { InMemoryOrderItemRepository } from "./in-memory-order-item-repository";
 
 export class InMemoryOrderRepository implements OrderRepository {
     public items: Order[] = [];
-
+    public itemsDetails: OrderDetails[] = [];
     constructor(
         private inMemoryOrderItemRepository: InMemoryOrderItemRepository,
     ) {}
@@ -15,6 +20,11 @@ export class InMemoryOrderRepository implements OrderRepository {
         return order || null;
     }
 
+    async updateStatus(order: Order): Promise<void> {
+        const index = this.items.findIndex((p) => p.id.equals(order.id));
+
+        this.items[index] = order;
+    }
     async save(order: Order): Promise<void> {
         const index = this.items.findIndex((p) => p.id.equals(order.id));
 
@@ -38,26 +48,20 @@ export class InMemoryOrderRepository implements OrderRepository {
         this.items = this.items.filter((p) => !p.id.equals(order.id));
     }
 
-    // async list({
-    //     search,
-    //     limit,
-    //     offset,
-    // }: IListOrdersRequest): Promise<IListOrdersResponse> {
-    //     let filteredOrders = this.items;
+    async list({
+        search,
+        limit,
+        offset,
+    }: IListOrdersRequest): Promise<IListOrdersResponse> {
+        let filteredOrders = this.itemsDetails;
 
-    //     if (search) {
-    //         filteredOrders = this.items.filter((user) =>
-    //             user.name.toLowerCase().includes(search.toLowerCase()),
-    //         );
-    //     }
-
-    //     const startIndex = offset || 0;
-    //     const endIndex = startIndex + (limit || this.items.length);
-    //     const paginatedOrders = filteredOrders.slice(startIndex, endIndex);
-    //     return {
-    //         orders: paginatedOrders,
-    //         count: this.items.length,
-    //     };
-    // }
+        const startIndex = offset || 0;
+        const endIndex = startIndex + (limit || this.items.length);
+        const paginatedOrders = filteredOrders.slice(startIndex, endIndex);
+        return {
+            orders: paginatedOrders,
+            count: this.items.length,
+        };
+    }
 }
 

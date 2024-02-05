@@ -17,7 +17,7 @@ class AuthenticateUserController implements IController {
                 email,
                 password,
             });
-            if (result.isLeft()) return response.status(400).json(result.value);
+            if (result.isLeft()) return response.status(401).json(result.value);
 
             return response.status(200).json(result.value);
         } catch (error) {

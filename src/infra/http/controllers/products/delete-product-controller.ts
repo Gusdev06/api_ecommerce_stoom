@@ -24,7 +24,7 @@ class DeleteProductController implements IController {
 
             if (result.isLeft())
                 return response
-                    .status(HttpStatusCode.BAD_REQUEST)
+                    .status(HttpStatusCode.NOT_FOUND)
                     .json(result.value);
 
             return response

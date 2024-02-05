@@ -1,13 +1,20 @@
 import { AggregateRoot } from "@/core/entities/aggregate-root";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
-import { Optional } from "@prisma/client/runtime/library";
+
+import { Optional } from "@/core/types/optional";
 import { OrderItem } from "./order-item";
 import { OrderitemList } from "./order-item-list";
 
+export enum Status {
+    NEW_ORDER = "NEW_ORDER",
+    PROCESSING_ORDER = "PROCESSING_ORDER",
+    DISPATCHED_ORDER = "DISPATCHED_ORDER",
+    DELIVERED_ORDER = "DELIVERED_ORDER",
+}
 export interface OrderProps {
     userId: UniqueEntityID;
     itens: OrderitemList;
-    status: string;
+    status: Status;
     total: number;
     createdAt: Date;
     updatedAt?: Date | null;
@@ -31,7 +38,7 @@ export class Order extends AggregateRoot<OrderProps> {
         return this.props.status;
     }
 
-    set status(value: string) {
+    set status(value: Status) {
         this.props.status = value;
         this.touch();
     }
@@ -90,7 +97,7 @@ export class Order extends AggregateRoot<OrderProps> {
             {
                 ...props,
                 itens: props.itens ?? new OrderitemList(),
-                status: "NEW_ORDER",
+                status: props.status ?? Status.NEW_ORDER,
                 total: 0,
                 createdAt: new Date(),
                 updatedAt: new Date(),

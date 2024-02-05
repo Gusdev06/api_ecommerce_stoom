@@ -1,8 +1,13 @@
-import { Order } from "@/domain/orders/entities/order";
+import { Order, Status } from "@/domain/orders/entities/order";
 import { OrderItemRepository } from "@/domain/orders/repositories/order-item-repository";
-import { OrderRepository } from "@/domain/orders/repositories/order-repository";
+import {
+    IListOrdersRequest,
+    IListOrdersResponse,
+    OrderRepository,
+} from "@/domain/orders/repositories/order-repository";
 import { PrismaClient } from "@prisma/client";
 import { context } from "../context";
+import { PrismaOrderDetailsMapper } from "../mappers/prisma-order-details-mapper";
 import { PrismaOrderMapper } from "../mappers/prisma-order-mapper";
 
 class OrderPrismaRepository implements OrderRepository {
@@ -34,8 +39,13 @@ class OrderPrismaRepository implements OrderRepository {
             }),
             this.orderItensRepository.createMany(order.itens.getNewItems()),
             this.orderItensRepository.deleteMany(order.itens.getRemovedItems()),
-            console.log(order.itens.getNewItems()),
         ]);
+    }
+    async updateStatus(order: Order): Promise<void> {
+        await this.prismaClient.order.update({
+            where: { id: order.id.toString() },
+            data: { status: order.status as Status },
+        });
     }
 
     async create(order: Order): Promise<void> {
@@ -55,6 +65,40 @@ class OrderPrismaRepository implements OrderRepository {
         await this.prismaClient.order.delete({
             where: { id: order.id.toString() },
         });
+    }
+
+    async list({
+        search,
+        limit,
+        offset,
+    }: IListOrdersRequest): Promise<IListOrdersResponse | null> {
+        const count = await this.prismaClient.order.count({});
+
+        const ordersP = await this.prismaClient.order.findMany({
+            take: limit,
+            skip: offset,
+            include: {
+                user: true,
+                itens: {
+                    include: {
+                        product: true,
+                    },
+                },
+            },
+        });
+
+        if (!ordersP) return null;
+
+        const orders = await Promise.all(
+            ordersP.map(async (orderP) => {
+                return PrismaOrderDetailsMapper.toDomain(orderP);
+            }),
+        );
+
+        return {
+            orders,
+            count,
+        };
     }
 }
 

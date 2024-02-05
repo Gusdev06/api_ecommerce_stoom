@@ -15,19 +15,17 @@ class OrderItemPrismaRepository implements OrderItemRepository {
             return;
         }
 
-        const productIds = orderItens.map((orderItem) =>
-            orderItem.productId.toString(),
+        const ordersId = orderItens.map((orderItem) =>
+            orderItem.orderId.toString(),
         );
 
         await this.prismaClient.orderItem.deleteMany({
             where: {
-                productId: {
-                    in: productIds,
+                orderId: {
+                    in: ordersId,
                 },
             },
         });
-
-        console.log("Deleted order itens", productIds);
     }
     async findManyByOrderId(orderId: string): Promise<OrderItem[]> {
         const orderItens = await this.prismaClient.orderItem.findMany({

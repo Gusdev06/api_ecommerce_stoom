@@ -1,7 +1,8 @@
 import { Order } from "../entities/order";
+import { OrderDetails } from "../entities/value-objects/order-details";
 
 export interface IListOrdersResponse {
-    orders: Order[];
+    orders: OrderDetails[];
     count: number;
 }
 
@@ -21,12 +22,13 @@ export interface IListUseCaseParams {
 
 export abstract class OrderRepository {
     abstract findById(id: string): Promise<Order | null>;
-    // abstract list({
-    //     search,
-    //     limit,
-    //     offset,
-    // }: IListOrdersRequest): Promise<IListOrdersResponse | null>;
+    abstract list({
+        search,
+        limit,
+        offset,
+    }: IListOrdersRequest): Promise<IListOrdersResponse | null>;
     abstract save(order: Order): Promise<void>;
+    abstract updateStatus(order: Order): Promise<void>;
     abstract create(order: Order): Promise<void>;
     abstract delete(order: Order): Promise<void>;
 }

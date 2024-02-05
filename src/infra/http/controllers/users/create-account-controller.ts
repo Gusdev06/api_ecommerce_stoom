@@ -23,7 +23,7 @@ class CreateUserController implements IController {
                 password,
             });
 
-            if (result.isLeft()) return response.status(400).json(result.value);
+            if (result.isLeft()) return response.status(409).json(result.value);
 
             return response
                 .status(201)

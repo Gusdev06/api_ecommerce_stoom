@@ -27,15 +27,23 @@ Content-Type: application/json
 
 
 
-DELETE  {{baseUrl}}/orders/9e15a040-a81c-4c26-9f08-e729b721c769
+POST  {{baseUrl}}/orders
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
   "itens": [
     {
-      "productId": "856d1820-f8e4-45c6-bb30-632788a9f736",
-      "quantity": 1
+      "productId": "6e8d1430-b5c8-46fd-bf1d-642eeb2d3e83",
+      "quantity": 0
+    },
+    {
+      "productId": "7142e8dc-98b3-4837-9855-d2f6c044fc17",
+      "quantity": 0
+    },
+    {
+      "productId": "f3e3e3e3-3e3e-3e3e-3e3e-3e3e3e3e3e3e",
+      "quantity": 0
     }
   ]
 }
@@ -47,18 +55,19 @@ Authorization: Bearer {{authToken}}
 
 ###
 
-PUT {{baseUrl}}/orders/idDoPedido/status
+PUT {{baseUrl}}/orders/status/bd87ccf3-b3ef-468d-a29c-8d23d98c7042
 Content-Type: application/json
-
+Authorization: Bearer {{authToken}}
 
 {
-  "status": "READY"
+  "status": "PROCESSING_ORDER"
 }
 ###
 
 
-GET {{baseUrl}}/products
+GET {{baseUrl}}/orders
 content-type: application/json
+Authorization: Bearer {{authToken}}
 ###
 POST {{baseUrl}}/products
 Content-Type: application/json
@@ -68,18 +77,17 @@ Content-Type: application/json
   "name": "Produto 1",
   "price": 10,
   "description": "Descrição do produto 1",
-  "inStock": 3
+  "inStock": 0
 }
 
 
 ###
 
-PUT {{baseUrl}}/products/e3373c3b-b0a2-425f-951f-de213bdc56c5
+PUT {{baseUrl}}/products/6e8d1430-b5c8-46fd-bf1d-642eeb2d3e83
 Content-Type: application/json
 
 {
-  "description": "teste",
-  "inStock": 0
+  "inStock": 655
 }
 
 
