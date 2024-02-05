@@ -1,8 +1,8 @@
 import { Either, left, right } from "@/core/either";
 import { IUseCase } from "@/core/protocols/IUseCase";
 
-import { NotFoundError } from "@/domain/products/errors/not-found-error";
 import { Order } from "../entities/order";
+import { NotFoundError } from "../errors/not-found-error";
 import { OrderRepository } from "../repositories/order-repository";
 
 interface DeleteOrderUseCaseRequest {

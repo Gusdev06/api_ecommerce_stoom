@@ -16,7 +16,7 @@ class EditOrderController implements IController {
         next: NextFunction,
     ): Promise<void | Response<any, Record<string, any>>> {
         try {
-            const { itens, status } = request.body;
+            const { itens } = request.body;
             const { id } = request.params;
             const result = await this.useCase.execute({
                 id,

@@ -4,10 +4,10 @@ import { ProductRepository } from "@/domain/products/repositories/product-reposi
 
 import { IUseCase } from "@/core/protocols/IUseCase";
 
-import { NotFoundError } from "@/domain/products/errors/not-found-error";
 import { Order } from "../entities/order";
 import { OrderItem, OrderItemProps } from "../entities/order-item";
 import { OrderitemList } from "../entities/order-item-list";
+import { NotFoundError } from "../errors/not-found-error";
 import { QuantityError } from "../errors/quantity-error";
 import { OrderRepository } from "../repositories/order-repository";
 

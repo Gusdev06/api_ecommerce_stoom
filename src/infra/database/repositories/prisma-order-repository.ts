@@ -68,7 +68,6 @@ class OrderPrismaRepository implements OrderRepository {
     }
 
     async list({
-        search,
         limit,
         offset,
     }: IListOrdersRequest): Promise<IListOrdersResponse | null> {
