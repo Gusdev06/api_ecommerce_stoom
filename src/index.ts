@@ -7,7 +7,7 @@ import { OrderRoutes } from "./routes/order.routes";
 import { ProductRoutes } from "./routes/products.routes";
 import { userRoutes } from "./routes/users.routes";
 
-import swaggerDocument from "./swagger.json";
+import swaggerDocument from "../swagger.json";
 
 dotenv.config();
 const app = express();

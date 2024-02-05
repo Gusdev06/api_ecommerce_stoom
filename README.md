@@ -10,6 +10,8 @@ v1.0.0
 
 -   <a href="#rodar">Como rodar este projeto?</a>
 
+-   <a href="#metodologias">Metodologias </a>
+
 ## Funcionalidades
 
 -   [x] Cadastro de usuarios
@@ -70,3 +72,6 @@ http://localhost:3333/api-docs
 
 -   Para executar os testes pode rodar o comando npm test
 
+## DDD
+
+-   Nesse projeto eu utilizei a metodologia DDD e alguns patterns como aggregate e watchedList que me auxiliou bastante no desenvolvimento, adoraria falar mais sobre em uma proxima conversa :D
