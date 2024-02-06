@@ -71,16 +71,14 @@ export class EditOrderUseCase
                 return OrderItem.create({
                     ...item,
                     orderId: order.id,
-                    price: product!.price * item.quantity,
+                    price: product!.price,
                 });
             }),
         );
 
         orderList.update(orderItens);
         order.itens = orderList;
-        order.total = orderList
-            .getItems()
-            .reduce((total, item) => total + item.price, 0);
+        order.total = order.calculateTotal();
         await this.orderRepository.save(order);
 
         return right({

@@ -44,7 +44,7 @@ Copie o arquivo .env.example e renomeie para .env. Este arquivo cont√©m as vari√
 
 ### Rodar projeto em um container Docker
 
-Para rodar o projeto em um container docker, basta rodar o comando: `docker-compose up` na raiz do projeto, esse comando ira criar um container com o banco de dados postgres e rodar o projeto em outro container.
+Para rodar o projeto em um container docker, basta rodar o comando: `docker-compose up` na raiz do projeto, esse comando ira criar um container com o banco de dados postgres.
 
 ### Gerando esquema do Prisma e criando estrutura no banco
 
