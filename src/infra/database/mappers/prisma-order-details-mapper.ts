@@ -30,6 +30,7 @@ export class PrismaOrderDetailsMapper {
                     price: item.product.price,
                 },
             })),
+            adress: raw.adress,
             status: raw.status,
             total: raw.total,
             createdAt: raw.createdAt,

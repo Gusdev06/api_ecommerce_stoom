@@ -20,11 +20,12 @@ class CreateOrderController implements IController {
         next: NextFunction,
     ): Promise<void | Response<any, Record<string, any>>> {
         try {
-            const { itens } = request.body;
+            const { itens, adress } = request.body;
             const userId = request.userId;
             const result = await this.useCase.execute({
                 userId,
                 itens,
+                adress,
             });
 
             if (result.isLeft()) {

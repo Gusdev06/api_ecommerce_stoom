@@ -18,6 +18,7 @@ export class OrdersDetailsPresenter {
                 name: ordersDetails.user.name,
                 email: ordersDetails.user.email,
             },
+            adress: ordersDetails.adress,
             status: ordersDetails.status,
             total: ordersDetails.total,
             createdAt: ordersDetails.createdAt,

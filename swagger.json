@@ -367,6 +367,7 @@
                             "examples": {
                                 "Orders": {
                                     "value": {
+                                        "adress": "Avenida Paulista, 1000 - São Paulo - SP - Brasil",
                                         "itens": [
                                             {
                                                 "productId": "1e042ab6-6fd9-496d-a0c2-34188a01cc34",
@@ -614,8 +615,10 @@
                     "id": {
                         "type": "string"
                     },
+                    "adress": "string",
                     "itens": {
                         "type": "array",
+
                         "items": {
                             "type": "object",
                             "properties": {

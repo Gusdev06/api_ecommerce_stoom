@@ -9,6 +9,7 @@ export class OrdersPresenter {
             itens: order.itens.currentItems.map(OrderItemPresenter.toHTTP),
             status: order.status,
             total: order.total,
+            adress: order.adress,
             createdAt: order.createdAt,
             updatedAt: order.updatedAt,
         };

@@ -39,6 +39,7 @@ model Order {
   updatedAt DateTime
   total     Float
   status    OrderStatus @default(NEW_ORDER)
+  adress    String
   itens     OrderItem[]
 
   @@map("orders")

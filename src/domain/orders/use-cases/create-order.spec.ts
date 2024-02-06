@@ -42,6 +42,7 @@ describe("Create Order Use Case", () => {
         await inMemoryProductRepository.create(newProduct2);
         const result = await sut.execute({
             userId: "user123",
+            adress: "Rua 123",
             itens: [
                 {
                     productId: newProduct.id,
@@ -87,6 +88,7 @@ describe("Create Order Use Case", () => {
         await inMemoryProductRepository.create(newProduct2);
         const result = await sut.execute({
             userId: "user123",
+            adress: "Rua 123",
             itens: [
                 {
                     productId: newProduct.id,
@@ -139,6 +141,7 @@ describe("Create Order Use Case", () => {
         await inMemoryProductRepository.create(newProduct2);
         const result = await sut.execute({
             userId: "user123",
+            adress: "Rua 123",
             itens: [
                 {
                     productId: newProduct.id,
@@ -179,6 +182,7 @@ describe("Create Order Use Case", () => {
         await inMemoryProductRepository.create(newProduct2);
         await sut.execute({
             userId: "user123",
+            adress: "Rua 123",
             itens: [
                 {
                     productId: newProduct.id,

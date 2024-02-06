@@ -44,6 +44,7 @@ describe("List Orders Use Case", () => {
                     name: "User",
                     email: "",
                 },
+                adress: "Rua 123",
                 status: Status.NEW_ORDER,
                 total: 0,
                 createdAt: new Date(),

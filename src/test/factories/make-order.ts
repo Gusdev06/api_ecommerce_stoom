@@ -12,6 +12,7 @@ export function makeOrder(
             userId: new UniqueEntityID(),
             status: Status.NEW_ORDER,
             total: faker.number.float(),
+            adress: faker.location.country(),
             updatedAt: undefined,
             ...override,
         },

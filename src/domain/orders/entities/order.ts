@@ -16,6 +16,7 @@ export interface OrderProps {
     itens: OrderitemList;
     status: Status;
     total: number;
+    adress: string;
     createdAt: Date;
     updatedAt?: Date | null;
 }
@@ -30,6 +31,14 @@ export class Order extends AggregateRoot<OrderProps> {
         this.touch();
     }
 
+    get adress() {
+        return this.props.adress;
+    }
+
+    set adress(value: string) {
+        this.props.adress = value;
+        this.touch();
+    }
     get userId() {
         return this.props.userId;
     }

@@ -7,7 +7,7 @@ Content-Type: application/json
 {
   "name": "Gustavo Gomes",
   "email": "gustvoa@.com.br",
-  "password": "12345678",
+  "password": "12345678"
 
 }
 
@@ -31,18 +31,11 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
+  "adress": "Rua 1",
   "itens": [
     {
-      "productId": "6e8d1430-b5c8-46fd-bf1d-642eeb2d3e83",
-      "quantity": 0
-    },
-    {
-      "productId": "7142e8dc-98b3-4837-9855-d2f6c044fc17",
-      "quantity": 0
-    },
-    {
-      "productId": "f3e3e3e3-3e3e-3e3e-3e3e-3e3e3e3e3e3e",
-      "quantity": 0
+      "productId": "1a9d2769-de50-40a2-ba7b-cb9d02192629",
+      "quantity": 1
     }
   ]
 }
@@ -70,13 +63,13 @@ Authorization: Bearer {{authToken}}
 ###
 POST {{baseUrl}}/products
 Content-Type: application/json
-
+Authorization: Bearer {{authToken}}
 
 {
   "name": "Produto 1",
   "price": 10,
   "description": "Descrição do produto 1",
-  "inStock": 0
+  "inStock": 19
 }
 
 

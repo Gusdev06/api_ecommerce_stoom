@@ -14,6 +14,7 @@ import { OrderRepository } from "../repositories/order-repository";
 export interface ICreateOrderDTO {
     userId: string;
     itens: OrderItemProps[];
+    adress: string;
 }
 
 type CreateOrderUseCaseResponse = Either<
@@ -33,9 +34,11 @@ export class CreateOrderUseCase
     async execute({
         userId,
         itens,
+        adress,
     }: ICreateOrderDTO): Promise<CreateOrderUseCaseResponse> {
         const order = Order.create({
             userId: new UniqueEntityID(userId),
+            adress,
         });
 
         for (const item of itens) {
@@ -67,7 +70,7 @@ export class CreateOrderUseCase
             if (orderItem.quantity < 1) {
                 return left(new QuantityError());
             }
-            order.addItem(orderItem);
+            order.itens.add(orderItem);
         }
 
         const total = order.calculateTotal();

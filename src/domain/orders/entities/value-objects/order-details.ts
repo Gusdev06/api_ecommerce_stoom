@@ -24,6 +24,7 @@ export interface OrderDetailsProps {
     user: IUserProps;
     status: string;
     total: number;
+    adress: string;
     createdAt: Date;
     updatedAt?: Date | null;
 }
@@ -37,6 +38,9 @@ export class OrderDetails extends ValueObject<OrderDetailsProps> {
         return this.props.status;
     }
 
+    get adress() {
+        return this.props.adress;
+    }
     get user() {
         return this.props.user;
     }
