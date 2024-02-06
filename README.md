@@ -68,6 +68,14 @@ Para rodar o projeto utilize o script `npm run dev`
 
 http://localhost:3333/api-docs
 
+Algumas rotas são privadas, e voce precisara se autenticar para conseguir testar elas
+
+Pegue o token que retornar ao se autenticar
+![Auth](https://i.imgur.com/ViKbbHp.png)
+
+Cole aqui
+![Colar](https://i.imgur.com/ofoG5i5.png)
+
 ## Testes com jest
 
 -   Para executar os testes pode rodar o comando npm test
@@ -75,3 +83,4 @@ http://localhost:3333/api-docs
 ## DDD
 
 -   Nesse projeto eu utilizei a metodologia DDD e alguns patterns como aggregate e watchedList que me auxiliou bastante no desenvolvimento, adoraria falar mais sobre em uma proxima conversa :D
+
