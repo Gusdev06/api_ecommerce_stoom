@@ -10,6 +10,7 @@ import { OrderitemList } from "../entities/order-item-list";
 import { NotFoundError } from "../errors/not-found-error";
 import { ProductOutOfStockError } from "../errors/product-out-of-stock";
 import { QuantityError } from "../errors/quantity-error";
+import { UnableAddItem } from "../errors/unable-add-item";
 import { OrderRepository } from "../repositories/order-repository";
 
 interface EditOrderUseCaseRequest {
@@ -19,7 +20,7 @@ interface EditOrderUseCaseRequest {
 }
 
 type EditOrderUseCaseResponse = Either<
-    NotFoundError | QuantityError | ProductOutOfStockError,
+    NotFoundError | QuantityError | ProductOutOfStockError | UnableAddItem,
     {
         order: Order;
     }
@@ -75,7 +76,9 @@ export class EditOrderUseCase
                 });
             }),
         );
-
+        if (order.status != "NEW_ORDER") {
+            return left(new UnableAddItem());
+        }
         orderList.update(orderItens);
         order.itens = orderList;
         order.total = order.calculateTotal();

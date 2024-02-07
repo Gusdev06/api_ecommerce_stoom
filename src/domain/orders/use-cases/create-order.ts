@@ -70,6 +70,7 @@ export class CreateOrderUseCase
             if (orderItem.quantity < 1) {
                 return left(new QuantityError());
             }
+
             order.itens.add(orderItem);
         }
 
